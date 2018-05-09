@@ -154,10 +154,9 @@ public class hl7Services : System.Web.Services.WebService
                 else {
                     if (parseador.guardarPeticion(json_array)) {
                     res = new jsonAcceptMessage(true, "OK");
-                  
+                    string mensajehl7 = "";
 
 
-                    //System.Diagnostics.Debug.WriteLine("Datos del parser"+parseadorhl7.getPeticion(peticion.Mensaje));
 
                     return JsonConvert.SerializeObject(res);
 
@@ -175,11 +174,20 @@ public class hl7Services : System.Web.Services.WebService
     //***************************************************************************************END Ingeso de datos*********************************************************
     [WebMethod]
     
-    public String getHl7(int tipo) {
-       
+    public String decodificarHl7() {
+        hl7parser parseadorhl7 = new hl7parser();
+        string peticion = @"MSH|^~\&|SIAP|MINSAL|IOLIS|TECNODIAGNOSTICA - VITEK 2 Compact|201705021121||OML^O21|1|D|2.5.1|||AL|AL|||||
+PID|1||911-16^^^30||JAIME AVILES^CESAR^EDUARDO ||201705031121|1
+PV1|1|2|MINSAL-Hospitalización
+ORC|NW|112||1|||||201705021200|||716^CERON RIVERA^ADA NOHEMY^|55^^^^^^^^Cirugía Hombres 1||||1^Ministerio de Salud||||Hospital Nacional Santa Tecla LI San Rafael^^30
+OBR|1|1069||298^HEMOCULTIVO^^M19|||201705021112||||||||1069SPM|1|1069||1^Sangre||||^^|||||||||201705021212^";
+
+        parseadorhl7.getPeticion(peticion);
         
-        return "FUNCION VACIA";
+        return "OK";
     }
+
+
     [WebMethod]
     public string acceptMessage2(string json_array)
     {

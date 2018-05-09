@@ -15,11 +15,11 @@ public class hl7parser
       
     }
 
-    public DatosPeticion getPeticion(string peticion)
+    public PeticionEntrante getPeticion(string peticion)
     {
-        DatosPeticion nuevaPeticion = new DatosPeticion();
+        PeticionEntrante nuevaPeticion = new PeticionEntrante();
         System.Diagnostics.Debug.WriteLine("PETICION: " + peticion.ToString());
-        var mensaje = NextLevelSeven.Core.Message.Build(@peticion.ToString());
+        var mensaje = NextLevelSeven.Core.Message.Build(peticion);
         var segmentos = mensaje[1];
         // first segment in a message (returns IElement)
         var mshSegment = mensaje[1];
@@ -44,7 +44,7 @@ public class hl7parser
         var pv1Segment = mensaje.Segments.OfType("PV1").First();
         var orcSegment = mensaje.Segments.OfType("ORC").First();
         var obrSegment = mensaje.Segments.OfType("OBR").First();
-        var SpmSegment = mensaje.Segments.OfType("SPM").First();
+
 
         /*JULIO PETICION*/
 
@@ -56,4 +56,25 @@ public class hl7parser
 
     }
 
+
+    public Boolean isValid(string mensaje, string md5)
+    {
+        parser parseadormd5 = new parser();
+        PeticionEntrante nuevaPeticion = null;
+        string md5Local = parseadormd5.MD5Hash(mensaje);
+        if (md5 == md5Local) { 
+            nuevaPeticion = getPeticion(mensaje);    
+
+            if (nuevaPeticion != null)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+
+
+
+    
 }
