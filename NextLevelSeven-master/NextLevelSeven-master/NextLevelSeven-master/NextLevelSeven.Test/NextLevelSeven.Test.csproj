@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net45</TargetFrameworks>
+		<PackageId>NextLevelSeven.Test</PackageId>
+		<PackageVersion>1.0.0</PackageVersion>
+		<Title>NextLevelSeven.Test</Title>
+		<Authors>Tony Konzel</Authors>
+		<Description></Description>
+		<Copyright>(c) 2017 Tony Konzel</Copyright>
+	</PropertyGroup>
+	<ItemGroup>
+      <PackageReference Include="FluentAssertions" Version="4.0.1" />
+	  <PackageReference Include="Moq" Version="4.2.1510.2205" />
+	  <PackageReference Include="NUnit" Version="2.6.4" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\NextLevelSeven\NextLevelSeven.csproj" />
+	</ItemGroup>  
+</Project>
