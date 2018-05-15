@@ -10,7 +10,7 @@ public class Peticion
 {
     private string token;
     private string mensaje;
-    private string md5;
+    private string checksum;
 
     
 
@@ -19,11 +19,11 @@ public class Peticion
        
     }
 
-    public Peticion(string token, string mensaje, string md5)
+    public Peticion(string token, string mensaje, string checksum)
     {
         this.Token = token;
         this.Mensaje = mensaje;
-        this.Md5 = md5;
+        this.checksum = checksum;
     }
 
     public string Token
@@ -52,16 +52,16 @@ public class Peticion
         }
     }
 
-    public string Md5
+    public string Checksum
     {
         get
         {
-            return md5;
+            return checksum;
         }
 
         set
         {
-            md5 = value;
+            checksum = value;
         }
     }
 }

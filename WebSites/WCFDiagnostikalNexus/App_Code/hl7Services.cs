@@ -19,8 +19,6 @@ public class hl7Services : System.Web.Services.WebService
 
     public hl7Services()
     {
-
-
         //Uncomment the following line if using designed components 
         //InitializeComponent(); 
     }
@@ -136,7 +134,7 @@ public class hl7Services : System.Web.Services.WebService
 
         Peticion peticion = JsonConvert.DeserializeObject<Peticion>(json_array);
         hl7parser parseadorhl7 = new hl7parser();
-        System.Diagnostics.Debug.WriteLine("ACESO DESDE FUERA" + json_array);
+        System.Diagnostics.Debug.WriteLine("ACESO DESDE FUERA, SE RECIBIO Y DECODIFICO ");
 
 
         SoapHeader.AuthenticationToken = peticion.Token;
@@ -152,19 +150,13 @@ public class hl7Services : System.Web.Services.WebService
                 return JsonConvert.SerializeObject(res);
             }
                 else {
-                    if (parseador.guardarPeticion(json_array)) {
-                    res = new jsonAcceptMessage(true, "OK");
-                    string mensajehl7 = "";
-
-
-
-                    return JsonConvert.SerializeObject(res);
-
-
-
-
-                }
-                }
+                parseadorhl7.getPeticion(peticion.Mensaje);
+                res = new jsonAcceptMessage(true, "Ok");
+                return JsonConvert.SerializeObject(res);
+                /*if (parseadorhl7.isValid(peticion.Mensaje, peticion.Checksum)) { 
+                
+                }*/
+            }
 
            
              }
@@ -173,15 +165,22 @@ public class hl7Services : System.Web.Services.WebService
     }
     //***************************************************************************************END Ingeso de datos*********************************************************
     [WebMethod]
-    
     public String decodificarHl7() {
         hl7parser parseadorhl7 = new hl7parser();
-        string peticion = @"MSH|^~\&|SIAP|MINSAL|IOLIS|TECNODIAGNOSTICA - VITEK 2 Compact|201705021121||OML^O21|1|D|2.5.1|||AL|AL|||||
+       /* string peticion = @"MSH|^~\&|SIAP|MINSAL|IOLIS|TECNODIAGNOSTICA - VITEK 2 Compact|201705021121||OML^O21|1|D|2.5.1|||AL|AL|||||
 PID|1||911-16^^^30||JAIME AVILES^CESAR^EDUARDO ||201705031121|1
 PV1|1|2|MINSAL-Hospitalización
 ORC|NW|112||1|||||201705021200|||716^CERON RIVERA^ADA NOHEMY^|55^^^^^^^^Cirugía Hombres 1||||1^Ministerio de Salud||||Hospital Nacional Santa Tecla LI San Rafael^^30
 OBR|1|1069||298^HEMOCULTIVO^^M19|||201705021112||||||||1069SPM|1|1069||1^Sangre||||^^|||||||||201705021212^";
+*/
 
+        string peticion= @"MSH|^~\u005Cu005C&|SIAP|MINSAL|DiagnostikalServer|DIAGNOSTIKA CAPRIS|201805091010||OML^O21|1|D|2.5.1|||AL|AL||||| 
+PID|1||1-18^^^43||PANIAGUA GOMEZ^KENNETH^ANTONIO ||2004-04-01|1 
+PV1|1|1|MINSAL-Consulta Externa 
+ORC|NW|28||3|||||201805090411|||49^DIAZ ALARCÓN^JULIO ERNESTO^|46^^^^^^^^MINSAL-Cirugía Oral||||1^Ministerio de Salud||||Hospital Nacional San Vicente SV   Santa Gertrudis^^43
+OBR|1|42||493^COLESTEROL^^Q10|||201805090959|||1|||||42 
+OBR|2|41||487^ACIDO ÚRICO^^Q4|||201805090959|||1|||||41 SPM|1|42||1^Sangre||||^^|||||||||201805090959 
+SPM|2|41||1^Sangre||||^^|||||||||201805090959";
         parseadorhl7.getPeticion(peticion);
         
         return "OK";
@@ -189,57 +188,13 @@ OBR|1|1069||298^HEMOCULTIVO^^M19|||201705021112||||||||1069SPM|1|1069||1^Sangre|
 
 
     [WebMethod]
-    public string acceptMessage2(string json_array)
+    public string acceptMessage2Respuesta()
     {
-        parser parseador = new parser();
-        jsonAcceptMessage res;
-        System.Diagnostics.Debug.WriteLine("JSON: " + json_array);
+        openfDBManager managerDBOpenf = new openfDBManager();
+        String respuesta = "";
+        respuesta = managerDBOpenf.RespuestaQuimica();
 
 
-
-
-
-        Peticion peticion = JsonConvert.DeserializeObject<Peticion>(json_array);
-        hl7parser parseadorhl7 = new hl7parser();
-        System.Diagnostics.Debug.WriteLine("ACESO DESDE FUERA" + json_array);
-
-
-        SoapHeader.AuthenticationToken = peticion.Token;
-        if (peticion != null)
-        {
-            if (SoapHeader == null)
-            {
-                res = new jsonAcceptMessage(false, "Permiso Denegado");
-                return JsonConvert.SerializeObject(res);
-
-            }
-
-            if (!SoapHeader.IsUserCredentialsValid(SoapHeader))
-            {
-                res = new jsonAcceptMessage(false, "Permiso Denegado");
-                return JsonConvert.SerializeObject(res);
-            }
-            else
-            {
-                if (true)
-                {
-                    res = new jsonAcceptMessage(true, "Ok");
-
-
-
-                    //System.Diagnostics.Debug.WriteLine("Datos del parser"+parseadorhl7.getPeticion(peticion.Mensaje));
-
-                    return JsonConvert.SerializeObject(res);
-
-
-
-
-                }
-            }
-
-
-        }
-        res = new jsonAcceptMessage(false, "No Hubo recepcion");
-        return JsonConvert.SerializeObject(res);
+        return respuesta;
     }
 }

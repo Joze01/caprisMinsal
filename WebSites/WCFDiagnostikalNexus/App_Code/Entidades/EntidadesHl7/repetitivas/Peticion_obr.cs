@@ -16,22 +16,8 @@ public class Peticion_obr
     private string obr4_4_AlternateIdentifier;
     //
     private string obr7_ObservationDate;
+    private string obr10_CollectorIdentifier;
     private string obr15_specimenSource;
-    private string obr16_orderingProvider;
-    private string obr17_orderCallBackPhoneNumber;//PREGUNTAR A JULIO
-    //Placer Fiel2 obr19> 
-    private string obr19_1_id;
-    private string obr19_2_text;
-
-    //result interpreter
-    private string obr32_1; //Parece una fecha
-
-    public Peticion_obr()
-    {
-        //
-        // TODO: Agregar aquí la lógica del constructor
-        //
-    }
 
     public string Obr1_idOBR
     {
@@ -124,68 +110,16 @@ public class Peticion_obr
         }
     }
 
-    public string Obr16_orderingProvider
+    public string Obr10_CollectorIdentifier
     {
         get
         {
-            return obr16_orderingProvider;
+            return obr10_CollectorIdentifier;
         }
 
         set
         {
-            obr16_orderingProvider = value;
-        }
-    }
-
-    public string Obr17_orderCallBackPhoneNumber
-    {
-        get
-        {
-            return obr17_orderCallBackPhoneNumber;
-        }
-
-        set
-        {
-            obr17_orderCallBackPhoneNumber = value;
-        }
-    }
-
-    public string Obr19_1_id
-    {
-        get
-        {
-            return obr19_1_id;
-        }
-
-        set
-        {
-            obr19_1_id = value;
-        }
-    }
-
-    public string Obr19_2_text
-    {
-        get
-        {
-            return obr19_2_text;
-        }
-
-        set
-        {
-            obr19_2_text = value;
-        }
-    }
-
-    public string Obr32_1
-    {
-        get
-        {
-            return obr32_1;
-        }
-
-        set
-        {
-            obr32_1 = value;
+            obr10_CollectorIdentifier = value;
         }
     }
 }

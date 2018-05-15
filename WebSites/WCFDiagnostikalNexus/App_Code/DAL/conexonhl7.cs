@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -7,28 +8,35 @@ using System.Web;
 /// <summary>
 /// Descripción breve de conexonhl7
 /// </summary>
-public class conexonhl7
+public class Conexonhl7
 {
     //mi conexion:
-    SqlConnection con = new SqlConnection("server=localhost; database=hl7; integrated security = true");
-
+    SqlConnection con = null;
+    SqlDataReader reader = null;
+    SqlCommand cmd = null;
     //procedimiento que abre la conexion sqlsever
     public void conectar()
     {
         try
         {
+            desconectar();
+            con = new SqlConnection("Data Source=localhost;Initial Catalog=hl7;Integrated Security=True");
             con.Open();
         }
         catch (Exception ex)
         {
-            Console.Write(ex.Message);
+            System.Diagnostics.Debug.WriteLine(ex.ToString());
+
         }
     }
 
     //procedimiento que cierra la conexion sqlserver
     public void desconectar()
     {
-        con.Close();
+        if (con != null) { 
+            con.Close();
+        }
+
     }
 
     //funcion que devuelve la conexion sqlserver
@@ -37,32 +45,6 @@ public class conexonhl7
         return con;
     }
 
-    public Boolean nuevaPeticion(DatosPeticion datos)
-    {
-        this.conectar();
-        SqlCommand command = new SqlCommand();
-        command.Connection = getConexion();
-        command.CommandText = "INSERT INTO [hl7].[dbo].[transacciones] (peticion)" +
-            "VALUES(@peticion)";
 
-
-
-        command.Parameters.Add(new SqlParameter("@Orden", datos.Orden));
-        command.Parameters.Add(new SqlParameter("@FSolicitud", datos.Fsolicitud));
-        command.Parameters.Add(new SqlParameter("@Origen", datos.Origin));
-
-        int afectadas = command.ExecuteNonQuery();
-
-        if (afectadas > 0)
-        {
-            return true;
-        }
-
-
-
-
-
-        return false;
-    }
 
 }

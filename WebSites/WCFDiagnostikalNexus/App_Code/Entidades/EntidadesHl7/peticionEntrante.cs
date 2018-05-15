@@ -18,14 +18,14 @@ public class PeticionEntrante
     private string msh6_recivingFacilty; //
     private string msh7_dateTimeMessage;
     //Tipo de peticion cabecera segun la cabecera msh9> informacion del tipo 
-    private string msh91_messageCode; //deberian ser OML ya que todos son de laboratorio.
-    private string msh92_triggerEvent; //Poro lo general es O21 ya que es orden de laboratio. 
-    private string msh10_messageControlID;//ID de control para el mensaje.
+    private string msh9_1_messageCode; //deberian ser OML ya que todos son de laboratorio.
+    private string msh9_2_triggerEvent; //Poro lo general es O21 ya que es orden de laboratio. 
+    private string msh10_messageControlID;//ID de control para el mensaje.    CORRESPONDE A LA PLANTILLA
     private string msh11_processingID;//D es debugging
     private string msh12_versionId; //2.5.1 
     private string msh15_acceptAcknowledgmentType; //aceptarreconocimiento de tipo AL= siempre
     private string msh16_applicationAcknowledgmentType; //reconocimineto de aplicaicon AL=always
-   
+
     /// <summary>
     /// Segmento del paciente pid
     /// </summary>
@@ -39,6 +39,14 @@ public class PeticionEntrante
     //datos extras pid
     private string pid7_datetimeBirth;//fecha de nacimiento
     private string pid8_AdministrativeSex; //CONSULTAR A JULIO llega  1 y espera letras. 
+
+    /// <summary>
+    /// Segmento de la visita.
+    /// </summary>
+    private string pv1_idNumber;
+    private string pv2_patientClass;
+    private string pv3_assignedPatientLocation;
+
 
     /// <summary>
     /// Common Order 
@@ -67,8 +75,14 @@ public class PeticionEntrante
     /// </summary>
     private List<Peticion_obr> listaORB;
 
+    /// <summary>
+    /// Peticion de Muestras SPM
+    /// </summary>
+    private List<Peticion_spm> listaspm;
     public PeticionEntrante()
     {
+        listaORB = new List<Peticion_obr>();
+        listaspm = new List<Peticion_spm>();
         //
         // TODO: Agregar aquí la lógica del constructor
         //
@@ -139,29 +153,29 @@ public class PeticionEntrante
         }
     }
 
-    public string Msh91_messageCode
+    public string Msh9_1_messageCode
     {
         get
         {
-            return msh91_messageCode;
+            return msh9_1_messageCode;
         }
 
         set
         {
-            msh91_messageCode = value;
+            msh9_1_messageCode = value;
         }
     }
 
-    public string Msh92_triggerEvent
+    public string Msh9_2_triggerEvent
     {
         get
         {
-            return msh92_triggerEvent;
+            return msh9_2_triggerEvent;
         }
 
         set
         {
-            msh92_triggerEvent = value;
+            msh9_2_triggerEvent = value;
         }
     }
 
@@ -500,6 +514,73 @@ public class PeticionEntrante
         set
         {
             orc21_3_IdNumber = value;
+        }
+    }
+
+
+
+    public string Pv1_idNumber
+    {
+        get
+        {
+            return pv1_idNumber;
+        }
+
+        set
+        {
+            pv1_idNumber = value;
+        }
+    }
+
+    public string Pv2_patientClass
+    {
+        get
+        {
+            return pv2_patientClass;
+        }
+
+        set
+        {
+            pv2_patientClass = value;
+        }
+    }
+
+    public string Pv3_assignedPatientLocation
+    {
+        get
+        {
+            return pv3_assignedPatientLocation;
+        }
+
+        set
+        {
+            pv3_assignedPatientLocation = value;
+        }
+    }
+
+    public List<Peticion_obr> ListaORB
+    {
+        get
+        {
+            return listaORB;
+        }
+
+        set
+        {
+            listaORB = value;
+        }
+    }
+
+    public List<Peticion_spm> Listaspm
+    {
+        get
+        {
+            return listaspm;
+        }
+
+        set
+        {
+            listaspm = value;
         }
     }
 }
