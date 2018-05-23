@@ -22,9 +22,7 @@ public class hl7Services : System.Web.Services.WebService
         //Uncomment the following line if using designed components 
         //InitializeComponent(); 
     }
-
-
-
+    
     //*******************************************************Ingreso de datos****************************************************************************
     [WebMethod]
     public string checkin(string json_array)
@@ -164,37 +162,33 @@ public class hl7Services : System.Web.Services.WebService
         return JsonConvert.SerializeObject(res);
     }
     //***************************************************************************************END Ingeso de datos*********************************************************
-    [WebMethod]
-    public String decodificarHl7() {
-        hl7parser parseadorhl7 = new hl7parser();
-       /* string peticion = @"MSH|^~\&|SIAP|MINSAL|IOLIS|TECNODIAGNOSTICA - VITEK 2 Compact|201705021121||OML^O21|1|D|2.5.1|||AL|AL|||||
-PID|1||911-16^^^30||JAIME AVILES^CESAR^EDUARDO ||201705031121|1
-PV1|1|2|MINSAL-Hospitalización
-ORC|NW|112||1|||||201705021200|||716^CERON RIVERA^ADA NOHEMY^|55^^^^^^^^Cirugía Hombres 1||||1^Ministerio de Salud||||Hospital Nacional Santa Tecla LI San Rafael^^30
-OBR|1|1069||298^HEMOCULTIVO^^M19|||201705021112||||||||1069SPM|1|1069||1^Sangre||||^^|||||||||201705021212^";
-*/
-
-        string peticion= @"MSH|^~\u005Cu005C&|SIAP|MINSAL|DiagnostikalServer|DIAGNOSTIKA CAPRIS|201805091010||OML^O21|1|D|2.5.1|||AL|AL||||| 
-PID|1||1-18^^^43||PANIAGUA GOMEZ^KENNETH^ANTONIO ||2004-04-01|1 
-PV1|1|1|MINSAL-Consulta Externa 
-ORC|NW|28||3|||||201805090411|||49^DIAZ ALARCÓN^JULIO ERNESTO^|46^^^^^^^^MINSAL-Cirugía Oral||||1^Ministerio de Salud||||Hospital Nacional San Vicente SV   Santa Gertrudis^^43
-OBR|1|42||493^COLESTEROL^^Q10|||201805090959|||1|||||42 
-OBR|2|41||487^ACIDO ÚRICO^^Q4|||201805090959|||1|||||41 SPM|1|42||1^Sangre||||^^|||||||||201805090959 
-SPM|2|41||1^Sangre||||^^|||||||||201805090959";
-        parseadorhl7.getPeticion(peticion);
-        
-        return "OK";
-    }
 
 
     [WebMethod]
-    public string acceptMessage2Respuesta()
+    public string generarRespuestas()
     {
         openfDBManager managerDBOpenf = new openfDBManager();
-        String respuesta = "";
-        respuesta = managerDBOpenf.RespuestaQuimica();
+        string respuesta = "";
+        string jsonRespuesta = "";
+
+        respuesta = @"MSH|^~\\u005Cu005C&|Ls|5^Sci - DiagnotikalNexus|SIAP|MINSAL|201802211712||OUL^R22|3|D|2.5.1|||AL|AL" +
+                   "ORC | NW | 27553 ||| CM |||| 201802211712 ||| LAB0001 ^ DPC" +
+                   "OBR | 1 | 39030 || 150 ^ GLUCOSA ^ L ^ GLUC ^ GLUCOSA |||| 201802211712 || 1 |||||| LAB0001 ^ HEMATOLOGIA |||||| 201802211712 || HM | F" +
+                   "OBX | 1 | ST | 142 | 1 | Normal" +
+                   "OBX | 2 | NM | 484 ^ GLUCOSA | Instrumento | 80 | mg / dl | 70 - 110 |||| F ||| 201802211712" +
+                   "OBR | 2 | 39031 || 528 ^ DEPURACION DE CREATININA DE 24 HORAS ^ L ^ CRE24 ^ DEP CREA 24H |||| 201802211712 || 2 |||||| LAB0001 ^ HEMATOLOGIA |||||| 201802211712 || HM | F" +
+                   "OBX | 1 | ST | 142 | 3 | Anormal" +
+                   "OBX | 2 | NM | 100 ^ CREATININA | Instrumento | 0.7 | mg / dL | 0.55 - 1.02 |||| F ||| 201802211712" +
+                   "OBX | 3 | NM | 101 ^ CREATININA EN ORINA| Instrumento | 40 | mg / dl | 30 - 125 |||| F ||| 201802211712" +
+                   "OBX | 4 | NM | 102 ^ DEPURACION DE CREATININA 24 Hrs | Instrumento | 1.59 | ml / min | 70 - 110 |||| F ||| 201802211712" +
+                   "OBX | 5 | NM | 103 ^ VOLUMEN | Instrumento | 40 |||||| F ||| 201802211712";
+
+        //respues=
+        //forech ()
+        jsonRespuesta = "{\"Respuestas\": [{ \"mensaje\":\""+respuesta+"\"}]}";
 
 
-        return respuesta;
+
+        return jsonRespuesta;
     }
 }

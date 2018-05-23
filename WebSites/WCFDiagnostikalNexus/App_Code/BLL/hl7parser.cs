@@ -19,7 +19,7 @@ public class hl7parser
 
     public Boolean getPeticion(string peticion)
     {
-        mangerDBhl7.guardarPeticion(peticion); //guardar peticion en la base
+       
         PeticionEntrante nuevaPeticion = new PeticionEntrante();
         //System.Diagnostics.Debug.WriteLine("PETICION: " + peticion);
         var mensaje = NextLevelSeven.Core.Message.Build(peticion);
@@ -27,6 +27,7 @@ public class hl7parser
         // first segment in a message (returns IElement)
         var mshSegment = mensaje[1];
 
+      
         //Llenado de la cabecera MSH
         nuevaPeticion.Msh3_sendingApplication = mshSegment.Field(3).ToString();
         nuevaPeticion.Msh4_sendingFacility = mshSegment.Field(4).ToString();
@@ -113,7 +114,7 @@ public class hl7parser
         }
 
         //  System.Diagnostics.Debug.WriteLine("Cantidad segmegmentos SPM:" + spmSegment.Count());
-
+        mangerDBhl7.guardarPeticion(peticion, obrSegment.Count(), int.Parse(nuevaPeticion.Orc2_placerOrderNumer)); //guardar peticion en la base del servicio web
         //foreach (Peticion_spm)
         if (managerDBopenf.nuevaPeticion(nuevaPeticion))
         {
@@ -127,10 +128,17 @@ public class hl7parser
     public Boolean isValid(string mensaje, string md5)
     {
        
-        return false;
+        return true;
     }
     
+    public string getRespuesta(int orden)
+    {
+        string mensaje = "";
 
+        return mensaje;
+    }
+
+   
 
 
     
