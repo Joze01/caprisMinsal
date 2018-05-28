@@ -114,7 +114,7 @@ public class hl7parser
         }
 
         //  System.Diagnostics.Debug.WriteLine("Cantidad segmegmentos SPM:" + spmSegment.Count());
-        mangerDBhl7.guardarPeticion(peticion, obrSegment.Count(), int.Parse(nuevaPeticion.Orc2_placerOrderNumer)); //guardar peticion en la base del servicio web
+        //mangerDBhl7.guardarPeticion(peticion, obrSegment.Count(), int.Parse(nuevaPeticion.Orc2_placerOrderNumer)); //guardar peticion en la base del servicio web
         //foreach (Peticion_spm)
         if (managerDBopenf.nuevaPeticion(nuevaPeticion))
         {

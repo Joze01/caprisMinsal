@@ -26,12 +26,14 @@ public class Repuesta_Orb
     string obr_22_ResultReptStatusChangeDateTime;
     string obr_24_DiagnosticServiceID; // HM= hemato, MB= microbiologia, ch=Bioquimica
     string obr_25_ResultStatus; // = F
-    List<Respuesta_obx> obx_lsita;
+    Respuesta_obx_cualitativo obx_Cualitativo;
+    List<Respuesta_obx> listObxCuantitativos;
 
 
     public Repuesta_Orb()
     {
-        Obx_lsita = new List<Respuesta_obx>();
+        Obx_Cualitativo = new Respuesta_obx_cualitativo();
+        ListObxCuantitativos = new List<Respuesta_obx>();
         //
         // TODO: Agregar aquí la lógica del constructor
         //
@@ -219,16 +221,29 @@ public class Repuesta_Orb
         }
     }
 
-    public List<Respuesta_obx> Obx_lsita
+    public Respuesta_obx_cualitativo Obx_Cualitativo
     {
         get
         {
-            return obx_lsita;
+            return obx_Cualitativo;
         }
 
         set
         {
-            obx_lsita = value;
+            obx_Cualitativo = value;
+        }
+    }
+
+    public List<Respuesta_obx> ListObxCuantitativos
+    {
+        get
+        {
+            return listObxCuantitativos;
+        }
+
+        set
+        {
+            listObxCuantitativos = value;
         }
     }
 }
