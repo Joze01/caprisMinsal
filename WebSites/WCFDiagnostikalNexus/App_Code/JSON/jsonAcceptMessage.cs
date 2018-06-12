@@ -9,7 +9,7 @@ using System.Web;
 public class jsonAcceptMessage
 {
     private Boolean estado;
-    private string mensaje;
+    private string Mensaje;
 
 
     
@@ -24,7 +24,7 @@ public class jsonAcceptMessage
     public jsonAcceptMessage(bool estado, string mensaje)
     {
         this.estado = estado;
-        this.mensaje = mensaje;
+        this.Mensaje = mensaje;
     }
 
     public bool Estado
@@ -40,16 +40,16 @@ public class jsonAcceptMessage
         }
     }
 
-    public string Mensaje
+    public string mensaje
     {
         get
         {
-            return mensaje;
+            return Mensaje;
         }
 
         set
         {
-            mensaje = value;
+            Mensaje = value;
         }
     }
 }

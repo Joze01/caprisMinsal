@@ -8,21 +8,18 @@ using System.Web;
 /// </summary>
 public class Respuesta_obx
 {
+    string obx_1_ObxId;
+    string obx_2_ValueType;
+    string obx_3_1_Identifier;
+    string obx_3_2_text;
+    string obx_4_observationSubid;
+    string obx_5_ObservationValue;
+    string obx_6_units;
+    string obx_7_rangeReference;
+    string obx_11_ObservationResultStatus;
+    string obx_14_dateofObservation;
+    
 
-    string obr_1_idObr;
-    string orb_2_IdexamenSolicitado; 
-    string orb_4_1_IdExamenSolicitado;
-    string obr_4_2_NombreExamenSolicitado;
-    string obr_4_3_NombreCodificadoAlterno;
-    string obr_4_4_CodigoExamenContra;
-    string obr_4_5_NombreExamenContra;
-    string obr_4_6_NombreSistemCodificadoAlterno;
-    string orb_8_FechaEmisionResul;
-    string obr_16_1_CodigoProfesional;
-    string obr_16_2_NombreyApellidoProfesional;
-    string obr_22_fechaReporteFinaloCambio;
-    string obr_24_idServicioDiagnostico;
-    string obr_25_EstatusFinal;
 
     public Respuesta_obx()
     {
@@ -31,185 +28,133 @@ public class Respuesta_obx
         //
     }
 
-    public string Obr_1_idObr
+    public string Obx_1_ObxId
     {
         get
         {
-            return obr_1_idObr;
+            return obx_1_ObxId;
         }
 
         set
         {
-            obr_1_idObr = value;
+            obx_1_ObxId = value;
         }
     }
 
-    public string Orb_2_IdexamenSolicitado
+    public string Obx_2_ValueType
     {
         get
         {
-            return orb_2_IdexamenSolicitado;
+            return obx_2_ValueType;
         }
 
         set
         {
-            orb_2_IdexamenSolicitado = value;
+            obx_2_ValueType = value;
         }
     }
 
-    public string Orb_4_1_IdExamenSolicitado
+    public string Obx_3_1_Identifier
     {
         get
         {
-            return orb_4_1_IdExamenSolicitado;
+            return obx_3_1_Identifier;
         }
 
         set
         {
-            orb_4_1_IdExamenSolicitado = value;
+            obx_3_1_Identifier = value;
         }
     }
 
-    public string Obr_4_2_NombreExamenSolicitado
+    public string Obx_3_2_text
     {
         get
         {
-            return obr_4_2_NombreExamenSolicitado;
+            return obx_3_2_text;
         }
 
         set
         {
-            obr_4_2_NombreExamenSolicitado = value;
+            obx_3_2_text = value;
         }
     }
 
-    public string Obr_4_3_NombreCodificadoAlterno
+    public string Obx_4_observationSubid
     {
         get
         {
-            return obr_4_3_NombreCodificadoAlterno;
+            return obx_4_observationSubid;
         }
 
         set
         {
-            obr_4_3_NombreCodificadoAlterno = value;
+            obx_4_observationSubid = value;
         }
     }
 
-    public string Obr_4_4_CodigoExamenContra
+    public string Obx_5_ObservationValue
     {
         get
         {
-            return obr_4_4_CodigoExamenContra;
+            return obx_5_ObservationValue;
         }
 
         set
         {
-            obr_4_4_CodigoExamenContra = value;
+            obx_5_ObservationValue = value;
         }
     }
 
-    public string Obr_4_5_NombreExamenContra
+    public string Obx_6_units
     {
         get
         {
-            return obr_4_5_NombreExamenContra;
+            return obx_6_units;
         }
 
         set
         {
-            obr_4_5_NombreExamenContra = value;
+            obx_6_units = value;
         }
     }
 
-    public string Obr_4_6_NombreSistemCodificadoAlterno
+    public string Obx_7_rangeReference
     {
         get
         {
-            return obr_4_6_NombreSistemCodificadoAlterno;
+            return obx_7_rangeReference;
         }
 
         set
         {
-            obr_4_6_NombreSistemCodificadoAlterno = value;
+            obx_7_rangeReference = value;
         }
     }
 
-    public string Orb_8_FechaEmisionResul
+    public string Obx_11_ObservationResultStatus
     {
         get
         {
-            return orb_8_FechaEmisionResul;
+            return obx_11_ObservationResultStatus;
         }
 
         set
         {
-            orb_8_FechaEmisionResul = value;
+            obx_11_ObservationResultStatus = value;
         }
     }
 
-    public string Obr_16_1_CodigoProfesional
+    public string Obx_14_dateofObservation
     {
         get
         {
-            return obr_16_1_CodigoProfesional;
+            return obx_14_dateofObservation;
         }
 
         set
         {
-            obr_16_1_CodigoProfesional = value;
-        }
-    }
-
-    public string Obr_16_2_NombreyApellidoProfesional
-    {
-        get
-        {
-            return obr_16_2_NombreyApellidoProfesional;
-        }
-
-        set
-        {
-            obr_16_2_NombreyApellidoProfesional = value;
-        }
-    }
-
-    public string Obr_22_fechaReporteFinaloCambio
-    {
-        get
-        {
-            return obr_22_fechaReporteFinaloCambio;
-        }
-
-        set
-        {
-            obr_22_fechaReporteFinaloCambio = value;
-        }
-    }
-
-    public string Obr_24_idServicioDiagnostico
-    {
-        get
-        {
-            return obr_24_idServicioDiagnostico;
-        }
-
-        set
-        {
-            obr_24_idServicioDiagnostico = value;
-        }
-    }
-
-    public string Obr_25_EstatusFinal
-    {
-        get
-        {
-            return obr_25_EstatusFinal;
-        }
-
-        set
-        {
-            obr_25_EstatusFinal = value;
+            obx_14_dateofObservation = value;
         }
     }
 }

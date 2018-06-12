@@ -149,11 +149,9 @@ public class hl7Services : System.Web.Services.WebService
             }
                 else {
                 parseadorhl7.getPeticion(peticion.Mensaje);
-                res = new jsonAcceptMessage(true, "Ok");
+                res = new jsonAcceptMessage(true, "OK");
                 return JsonConvert.SerializeObject(res);
-                /*if (parseadorhl7.isValid(peticion.Mensaje, peticion.Checksum)) { 
-                
-                }*/
+
             }
 
            
@@ -163,32 +161,33 @@ public class hl7Services : System.Web.Services.WebService
     }
     //***************************************************************************************END Ingeso de datos*********************************************************
 
+    [WebMethod]
+    public void marcarEnvio(int id)
+    {
+
+        System.Diagnostics.Debug.WriteLine("EJECUTADO "+id);
+    }
 
     [WebMethod]
-    public string generarRespuestas()
+    public Envio[] generarRespuestas()
     {
-        openfDBManager managerDBOpenf = new openfDBManager();
-        string respuesta = "";
-        string jsonRespuesta = "";
-
-        respuesta = @"MSH|^~\\u005Cu005C&|Ls|5^Sci - DiagnotikalNexus|SIAP|MINSAL|201802211712||OUL^R22|3|D|2.5.1|||AL|AL" +
-                   "ORC | NW | 27553 ||| CM |||| 201802211712 ||| LAB0001 ^ DPC" +
-                   "OBR | 1 | 39030 || 150 ^ GLUCOSA ^ L ^ GLUC ^ GLUCOSA |||| 201802211712 || 1 |||||| LAB0001 ^ HEMATOLOGIA |||||| 201802211712 || HM | F" +
-                   "OBX | 1 | ST | 142 | 1 | Normal" +
-                   "OBX | 2 | NM | 484 ^ GLUCOSA | Instrumento | 80 | mg / dl | 70 - 110 |||| F ||| 201802211712" +
-                   "OBR | 2 | 39031 || 528 ^ DEPURACION DE CREATININA DE 24 HORAS ^ L ^ CRE24 ^ DEP CREA 24H |||| 201802211712 || 2 |||||| LAB0001 ^ HEMATOLOGIA |||||| 201802211712 || HM | F" +
-                   "OBX | 1 | ST | 142 | 3 | Anormal" +
-                   "OBX | 2 | NM | 100 ^ CREATININA | Instrumento | 0.7 | mg / dL | 0.55 - 1.02 |||| F ||| 201802211712" +
-                   "OBX | 3 | NM | 101 ^ CREATININA EN ORINA| Instrumento | 40 | mg / dl | 30 - 125 |||| F ||| 201802211712" +
-                   "OBX | 4 | NM | 102 ^ DEPURACION DE CREATININA 24 Hrs | Instrumento | 1.59 | ml / min | 70 - 110 |||| F ||| 201802211712" +
-                   "OBX | 5 | NM | 103 ^ VOLUMEN | Instrumento | 40 |||||| F ||| 201802211712";
-
-        //respues=
-        //forech ()
-        jsonRespuesta = "{\"Respuestas\": [{ \"mensaje\":\""+respuesta+"\"}]}";
+        Util utilidades = new Util();
+        utilidades.generarRespuestas();
+        
+        hl7DBManager managerHl7 = new hl7DBManager();
+        List<Envio> arregloRespuestas = new List<Envio>();
+        List<transacciones> listadoCompletas = managerHl7.ObtenerCompletos();
+        foreach (transacciones tran in listadoCompletas)
+        {
+            Envio nuevoEnvio = new Envio();
+            nuevoEnvio.Mensaje = tran.Respuesta;
+            arregloRespuestas.Add(nuevoEnvio);
+            //managerHl7.actualizarEnviadas(tran.Indice1, tran.Respuesta);
+        }
 
 
 
-        return jsonRespuesta;
+        //return arregloRespuestas.ToArray();
+        return arregloRespuestas.ToArray();
     }
 }

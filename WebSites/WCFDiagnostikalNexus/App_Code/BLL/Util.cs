@@ -15,91 +15,385 @@ public class Util
         //
     }
 
-    public List<string> getComentarioCualitativo(string sexo, int edad, Boolean embarazo, List<float>rangosMax, List<float> rangosMin, string lectura)
+    public List<string> getRangos(int edadDias, string lectura)
     {
         List<string> comentarios = new List<string>();
         string id="";
         string valorcomentario="";
-        try
-        {
-                
-                float valor = float.Parse(lectura);
-                float rangoUtilMax =0;
-                float rangoUtilMin = 0;
-                if (sexo == "M")
-                {
-                    rangoUtilMax = rangosMax[0];
-                    rangoUtilMin = rangosMin[0];
-                }else if(sexo == "F")
-                {
-                    rangoUtilMax = rangosMax[1];
-                    rangoUtilMin = rangosMin[1];
-                }
-
-                if (edad <14)
-                {
-                    rangoUtilMax = rangosMax[3];
-                    rangoUtilMin = rangosMin[3];
-                }
-                if (embarazo)
-                {
-                    rangoUtilMax = rangosMax[2];
-                    rangoUtilMin = rangosMin[2];
-                }
-
-                if(valor>=rangoUtilMin && valor <= rangoUtilMax)
-                {
-                id="1";
-                valorcomentario = "Normal";
-                }else {
-                id = "3";
-                valorcomentario = "Anormal";
-            }
-
-        }catch(Exception ex)
-        {
-            if (lectura == "Negativo")
-            {
-                id = "3";
-                valorcomentario = "Negativo";
-            }
-            if (lectura == "Positivo")
-            {
-                id = "4";
-                valorcomentario = "Positivo";
-            }
-            if (lectura == "Muestra Inadecuada")
-            {
-                id = "5";
-                valorcomentario = "Muestra Inadecuada";
-            }
-            if (lectura == "Otros")
-            {
-                id = "6";
-                valorcomentario = "Otros";
-            }
-            if (lectura == "Reactivo")
-            {
-                id = "7";
-                valorcomentario = "Reactivo";
-            }
-            if (lectura == "Indeterminado")
-            {
-                id = "8";
-                valorcomentario = "Indeterminado";
-            }
-            if (lectura == "No Reactivo")
-            {
-                id = "9";
-                valorcomentario = "No Reactivo";
-            }
-        }
+        float rangoUtilMax = 0;
+        float rangoUtilMin = 0;
+        
 
         comentarios.Add(id);
         comentarios.Add(valorcomentario);
+        comentarios.Add(rangoUtilMin.ToString());
+        comentarios.Add(rangoUtilMax.ToString());
         return comentarios;
     }
 
+    public void generarRespuestas() {
+        
+        openfDBManager managerDBOpenf = new openfDBManager();
+        hl7DBManager managerDBOhl7 = new hl7DBManager();
+        Repuesta resultadoRepuesta = new Repuesta();
+        hl7parser parseadorHl7 = new hl7parser();
+        Util utilidades = new Util();
+        DateTime now = DateTime.Now;
+        string respuesta = "";
+        List<transacciones> listaPendientes =new List<transacciones>();
+        List<resultview> resultadosObtenido = new List<resultview>();
+        Boolean orcCargado = false;
+        //now.ToString("yyyyMMddHHmm"); // case sensitive
+        resultadoRepuesta.Msh_1_fielSeparador = "|";
+        resultadoRepuesta.Msh_2_EncodeingCaracters = @"^~\&";
+        resultadoRepuesta.Msh_3_sendingApplication = "Nexus Web Service";
+        resultadoRepuesta.Msh_4_1_namespaceId = "7";
+        resultadoRepuesta.Msh_4_2_UniversalID = "DIAGNOSTIKAL CAPRIS";
+        resultadoRepuesta.Msh_5_ReceivingApplication = "SIAP";
+        resultadoRepuesta.Msh_6_ReceivingFacility = "MINSAL";
+        resultadoRepuesta.Msh_7_DateTimeOfMessage = now.ToString("yyyyMMddHHmm");
+        resultadoRepuesta.Msh_9_1_MessageCode = "OUL";
+        resultadoRepuesta.Msh_9_2_TriggerEvent = "R22";
+        resultadoRepuesta.Msh_10_MessageControlId = "3";
+        resultadoRepuesta.Msh_11_ProcessingID = "D";
+        resultadoRepuesta.Msh_12_VersionId = "2.5.1";
+        resultadoRepuesta.Msh_15_acceptAcknowledgemeType = "AL";
+        resultadoRepuesta.Msh_16_ApplicationAcknowledgmeType = "AL";
+
+        string msh = @"MSH" + resultadoRepuesta.Msh_1_fielSeparador + "^~\\u005Cu005C&|" + resultadoRepuesta.Msh_3_sendingApplication + "|" + resultadoRepuesta.Msh_4_1_namespaceId + "^" + resultadoRepuesta.Msh_4_2_UniversalID + "|" + resultadoRepuesta.Msh_5_ReceivingApplication + "|" + resultadoRepuesta.Msh_6_ReceivingFacility + "|" + resultadoRepuesta.Msh_7_DateTimeOfMessage + "||" + resultadoRepuesta.Msh_9_1_MessageCode + "^" + resultadoRepuesta.Msh_9_2_TriggerEvent + "|" + resultadoRepuesta.Msh_10_MessageControlId + "|" + resultadoRepuesta.Msh_11_ProcessingID + "|" + resultadoRepuesta.Msh_12_VersionId + "|||" + resultadoRepuesta.Msh_15_acceptAcknowledgemeType + "|" + resultadoRepuesta.Msh_16_ApplicationAcknowledgmeType + "_z";
+        
+
+        listaPendientes = managerDBOhl7.obtenerPendientes();
+        
+        foreach (transacciones tranIncompleta in listaPendientes ) {
+            int contadorObr = 1;
+            orcCargado = false;
+            respuesta = "";
+            resultadosObtenido = new List<resultview>();
+            resultadosObtenido = managerDBOpenf.getResultados(int.Parse(tranIncompleta.Siapsid));
+            PeticionEntrante peticionActual = new PeticionEntrante();
+            peticionActual = parseadorHl7.leerPeticion(tranIncompleta.Peticion);
 
 
-}
+
+            if (resultadosObtenido.Count()>0) { 
+                resultadoRepuesta.Orc_1_codigoDeControl = "NW";
+                resultadoRepuesta.Orc_2_IdSolicitudSiaps = tranIncompleta.Siapsid;
+                resultadoRepuesta.Orc_5_EstatusOrden = "CM";
+                resultadoRepuesta.Orc_9_FechaDeEnvio = now.ToString("yyyyMMddHHmm");
+
+
+                //resultadosObtenido = managerDBOpenf.getResultados(int.Parse(tranIncompleta.Respuesta));
+
+                foreach (Peticion_obr obrPeticion in peticionActual.ListaORB) {
+                    List<resultview> ResultadosObx = new List<resultview>();
+                    ResultadosObx=managerDBOpenf.getResultadosByEstudio(int.Parse(tranIncompleta.Siapsid), obrPeticion.Obr4_4_AlternateIdentifier);
+                   
+                    string examenIdStudio = ResultadosObx[0].Estudio;
+                    string TipoExamenPlantilla = ResultadosObx[0].Plantilla;
+                    string parametro = ResultadosObx[0].Parametro;
+
+
+                    Repuesta_Orb nuevaObrResult = new Repuesta_Orb();
+                    nuevaObrResult.Obr_1_IDOBR = contadorObr;
+                    nuevaObrResult.Obr_2_PlacerOrdeNumber = obrPeticion.Obr2_placerOrderNumber;
+                    nuevaObrResult.Obr_4_1_Identifier = managerDBOpenf.getExamenId(examenIdStudio);
+                    nuevaObrResult.Obr_4_2_Text = managerDBOpenf.getExamenName(examenIdStudio);
+                    nuevaObrResult.Obr_4_3_NameOfCodingSystem = "L";
+                    if (TipoExamenPlantilla == "A")
+                    {
+                        nuevaObrResult.Obr_4_4_AlternateIdentifier = managerDBOpenf.getAbreviado(ResultadosObx[0].Parametro);
+                    }
+                    else {
+                        nuevaObrResult.Obr_4_4_AlternateIdentifier = nuevaObrResult.Obr_4_2_Text.Substring(0, 5);
+                    }
+                    nuevaObrResult.Obr_4_5_AlternateText = nuevaObrResult.Obr_4_2_Text;
+                    nuevaObrResult.Obr_8_ObservationEndDateTime = ResultadosObx[0].Fecha.ToString();
+                    nuevaObrResult.Obr_10_CollectorIdentifier = obrPeticion.Obr10_CollectorIdentifier;
+                    nuevaObrResult.Obr_16_1_IdNumber = peticionActual.Orc12_1_idNumber;
+                    nuevaObrResult.Obr_16_2_FamilyName = peticionActual.Orc12_2_familyName;
+                    nuevaObrResult.Obr_22_ResultReptStatusChangeDateTime = now.ToString("yyyMMddHHmm");
+                    nuevaObrResult.Obr_24_DiagnosticServiceID = "CH";//REVISAR ESTOOOOOOOOOOOOOOOO
+                    nuevaObrResult.Obr_25_ResultStatus = "F";
+
+                    if (!orcCargado)
+                    {
+                        resultadoRepuesta.Orc_12_1_CodigoProfesional = ResultadosObx[0].Responsable;
+                        resultadoRepuesta.Orc_12_2_NombreProfesional = managerDBOpenf.getEncargadoName(ResultadosObx[0].Responsable);
+                        string orc = @"ORC|" + resultadoRepuesta.Orc_1_codigoDeControl + "|" + resultadoRepuesta.Orc_2_IdSolicitudSiaps + "|||" + resultadoRepuesta.Orc_5_EstatusOrden + "||||" + resultadoRepuesta.Orc_9_FechaDeEnvio + "|||" + resultadoRepuesta.Orc_12_1_CodigoProfesional + "^" + resultadoRepuesta.Orc_12_2_NombreProfesional + "_z";
+                        respuesta = msh + orc;
+                        orcCargado = true;
+                    }
+
+                    //SECCIONES DE LOS OBX
+                    Respuesta_obx_cualitativo nuevaObxCualitativo = new Respuesta_obx_cualitativo();
+                    nuevaObxCualitativo.Obx_1_IdObx = "1";
+                    nuevaObxCualitativo.Obx_2_TipoDato = "ST";
+                    nuevaObxCualitativo.Obx_3_IdExamenSolicitado = nuevaObrResult.Obr_4_1_Identifier;
+
+                    int contadorObx = 2;
+                  
+                    if (TipoExamenPlantilla == "A")
+                    {
+                        foreach (resultview resultadoAImprimir in ResultadosObx) {
+                            Respuesta_obx nuevoObxCuantitativo = new Respuesta_obx();
+                            nuevoObxCuantitativo.Obx_1_ObxId = contadorObx.ToString();
+                            nuevoObxCuantitativo.Obx_2_ValueType = "NM";
+                            nuevoObxCuantitativo.Obx_3_1_Identifier = nuevaObrResult.Obr_4_1_Identifier;
+                            nuevoObxCuantitativo.Obx_3_2_text = nuevaObrResult.Obr_4_2_Text;
+                            nuevoObxCuantitativo.Obx_4_observationSubid = "Instrumento";
+                            nuevoObxCuantitativo.Obx_5_ObservationValue = resultadoAImprimir.Resultado;
+                            nuevoObxCuantitativo.Obx_6_units = managerDBOpenf.getUnitstest(resultadoAImprimir.Parametro);
+                            string fechaNacimiento = peticionActual.Pid7_datetimeBirth;
+                            DateTime nacimiento = DateTime.ParseExact(fechaNacimiento + " 00:00:00", "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                            DateTime fecha_Actual = DateTime.Now;
+                            int edadDias = (fecha_Actual - nacimiento).Days;
+                            Rango rangosObtenidos = managerDBOpenf.getRangos(int.Parse(resultadoAImprimir.Parametro), edadDias, float.Parse(resultadoAImprimir.Resultado));
+                            nuevoObxCuantitativo.Obx_7_rangeReference = rangosObtenidos.RangoInferior.ToString() + " - " + rangosObtenidos.RangoSuperior.ToString();
+                            nuevoObxCuantitativo.Obx_11_ObservationResultStatus = "F";
+                            nuevoObxCuantitativo.Obx_14_dateofObservation = nuevaObrResult.Obr_8_ObservationEndDateTime;
+                            nuevaObrResult.ListObxCuantitativos.Add(nuevoObxCuantitativo);
+
+                            nuevaObxCualitativo.Obx_4_IdDelResultado = rangosObtenidos.IdComentario.ToString();//revisar
+                            nuevaObxCualitativo.Obx_5_ResultadoCualitativo = rangosObtenidos.Comentario;//revisar
+
+                            contadorObx++;
+                        }
+
+                    }
+                    else if(TipoExamenPlantilla=="B")//PlantillaB
+                    {
+                        foreach (resultview resultadoAImprimir in ResultadosObx)
+                        {
+                            Respuesta_obx nuevoObxCuantitativo = new Respuesta_obx();
+                            nuevoObxCuantitativo.Obx_1_ObxId = contadorObx.ToString();
+                            nuevoObxCuantitativo.Obx_2_ValueType = "NM";
+                            nuevoObxCuantitativo.Obx_3_1_Identifier = nuevaObrResult.Obr_4_1_Identifier;
+                            nuevoObxCuantitativo.Obx_3_2_text = nuevaObrResult.Obr_4_2_Text;
+                            nuevoObxCuantitativo.Obx_4_observationSubid = "Instrumento";
+                            nuevoObxCuantitativo.Obx_5_ObservationValue = resultadoAImprimir.Resultado;
+                            nuevoObxCuantitativo.Obx_6_units = managerDBOpenf.getUnitstest(nuevaObrResult.Obr_2_PlacerOrdeNumber);
+                            string fechaNacimiento = peticionActual.Pid7_datetimeBirth;
+                            DateTime nacimiento = DateTime.ParseExact(fechaNacimiento + " 00:00:00", "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                            DateTime fecha_Actual = DateTime.Now;
+                            int edadDias = (fecha_Actual - nacimiento).Days;
+                            Rango rangosObtenidos = managerDBOpenf.getRangos(int.Parse(nuevaObrResult.Obr_2_PlacerOrdeNumber), edadDias, float.Parse(resultadoAImprimir.Resultado));
+                            nuevoObxCuantitativo.Obx_7_rangeReference = rangosObtenidos.RangoInferior.ToString() + " - " + rangosObtenidos.RangoSuperior.ToString();
+                            nuevoObxCuantitativo.Obx_11_ObservationResultStatus = "F";
+                            nuevoObxCuantitativo.Obx_14_dateofObservation = nuevaObrResult.Obr_8_ObservationEndDateTime;
+                            nuevaObrResult.ListObxCuantitativos.Add(nuevoObxCuantitativo);
+
+                            nuevaObxCualitativo.Obx_4_IdDelResultado = ResultadosObx[ResultadosObx.Count - 1].Orden;//revisar
+                            nuevaObxCualitativo.Obx_5_ResultadoCualitativo = ResultadosObx[ResultadosObx.Count - 1].Resultado; //revisar
+
+                            contadorObx++;
+                        }
+                    }else if (TipoExamenPlantilla == "C")
+                    {
+
+                    }else if(TipoExamenPlantilla == "D")
+                    {
+
+                    }else if (TipoExamenPlantilla == "E")
+                    {
+
+                    }
+
+
+                    //END OBXS
+
+                    //Impresion de obx y obrs
+                    nuevaObrResult.Obx_Cualitativo = nuevaObxCualitativo;
+                    string obr = @"OBR|" + nuevaObrResult.Obr_1_IDOBR + "|" + nuevaObrResult.Obr_2_PlacerOrdeNumber + "||" + nuevaObrResult.Obr_4_1_Identifier + "^" + nuevaObrResult.Obr_4_2_Text + "^L^" + nuevaObrResult.Obr_4_4_AlternateIdentifier + "^" + nuevaObrResult.Obr_4_5_AlternateText + "||||" + nuevaObrResult.Obr_8_ObservationEndDateTime + "||" + nuevaObrResult.Obr_10_CollectorIdentifier + "||||||" + resultadoRepuesta.Orc_12_1_CodigoProfesional + "^" + resultadoRepuesta.Orc_12_2_NombreProfesional + "||||||" + nuevaObrResult.Obr_22_ResultReptStatusChangeDateTime + "||" + nuevaObrResult.Obr_24_DiagnosticServiceID + "|" + nuevaObrResult.Obr_25_ResultStatus + "_z";
+                    respuesta += obr;
+                    string obxCuali = @"OBX|" + nuevaObrResult.Obx_Cualitativo.Obx_1_IdObx + "|" + nuevaObrResult.Obx_Cualitativo.Obx_2_TipoDato + "|" + nuevaObrResult.Obx_Cualitativo.Obx_3_IdExamenSolicitado + "|" + nuevaObrResult.Obx_Cualitativo.Obx_4_IdDelResultado + "|" + nuevaObxCualitativo.Obx_5_ResultadoCualitativo + "_z";
+                    respuesta += obxCuali;
+                    foreach (Respuesta_obx resultObx in nuevaObrResult.ListObxCuantitativos) {
+                        string obx = @"OBX|" + resultObx.Obx_1_ObxId + "|" + resultObx.Obx_2_ValueType + "|" + resultObx.Obx_3_1_Identifier + "^" + resultObx.Obx_3_2_text + "|" + resultObx.Obx_4_observationSubid + "|" + resultObx.Obx_5_ObservationValue + "|" + resultObx.Obx_6_units + "|" + resultObx.Obx_7_rangeReference + "||||" + resultObx.Obx_11_ObservationResultStatus + "|||" + resultObx.Obx_14_dateofObservation + "_z";
+                        respuesta += obx;
+                    }
+
+                    contadorObr++;
+                }//END OBRS
+
+
+            }//end if resultado==null
+
+            if (respuesta != "")
+            managerDBOhl7.actualizarCompletas(tranIncompleta.Indice1, respuesta);
+            respuesta = "";
+            resultadoRepuesta = new Repuesta();
+            orcCargado = false;
+        }//end foreach Transacciones Incompletas
+    }
+        
+
+
+
+
+        public void generarRespuestas2(){
+
+        openfDBManager managerDBOpenf = new openfDBManager();
+        hl7DBManager managerDBOhl7 = new hl7DBManager();
+        Repuesta resultadoRepuesta = new Repuesta();
+        hl7parser parseadorHl7 = new hl7parser();
+        Util utilidades = new Util();
+        DateTime now = DateTime.Now;
+        string respuesta = "";
+        List<transacciones> listaPendientes = new List<transacciones>();
+        List<resultview> resultadosObtenido = new List<resultview>();
+        Boolean orcCargado = false;
+        //now.ToString("yyyyMMddHHmm"); // case sensitive
+        resultadoRepuesta.Msh_1_fielSeparador = "|";
+        resultadoRepuesta.Msh_2_EncodeingCaracters = @"^~\&";
+        resultadoRepuesta.Msh_3_sendingApplication = "Nexus Web Service";
+        resultadoRepuesta.Msh_4_1_namespaceId = "7";
+        resultadoRepuesta.Msh_4_2_UniversalID = "DIAGNOSTIKAL CAPRIS";
+        resultadoRepuesta.Msh_5_ReceivingApplication = "SIAP";
+        resultadoRepuesta.Msh_6_ReceivingFacility = "MINSAL";
+        resultadoRepuesta.Msh_7_DateTimeOfMessage = now.ToString("yyyyMMddHHmm");
+        resultadoRepuesta.Msh_9_1_MessageCode = "OUL";
+        resultadoRepuesta.Msh_9_2_TriggerEvent = "R22";
+        resultadoRepuesta.Msh_10_MessageControlId = "3";
+        resultadoRepuesta.Msh_11_ProcessingID = "D";
+        resultadoRepuesta.Msh_12_VersionId = "2.5.1";
+        resultadoRepuesta.Msh_15_acceptAcknowledgemeType = "AL";
+        resultadoRepuesta.Msh_16_ApplicationAcknowledgmeType = "AL";
+
+        string msh = @"MSH" + resultadoRepuesta.Msh_1_fielSeparador + "^~\\u005Cu005C&|" + resultadoRepuesta.Msh_3_sendingApplication + "|" + resultadoRepuesta.Msh_4_1_namespaceId + "^" + resultadoRepuesta.Msh_4_2_UniversalID + "|" + resultadoRepuesta.Msh_5_ReceivingApplication + "|" + resultadoRepuesta.Msh_6_ReceivingFacility + "|" + resultadoRepuesta.Msh_7_DateTimeOfMessage + "||" + resultadoRepuesta.Msh_9_1_MessageCode + "^" + resultadoRepuesta.Msh_9_2_TriggerEvent + "|" + resultadoRepuesta.Msh_10_MessageControlId + "|" + resultadoRepuesta.Msh_11_ProcessingID + "|" + resultadoRepuesta.Msh_12_VersionId + "|||" + resultadoRepuesta.Msh_15_acceptAcknowledgemeType + "|" + resultadoRepuesta.Msh_16_ApplicationAcknowledgmeType + "_z";
+
+
+        listaPendientes = managerDBOhl7.obtenerPendientes();
+
+        foreach (transacciones tranIncompleta in listaPendientes)
+        {
+            int contadorObr = 1;
+            orcCargado = false;
+            respuesta = "";
+            resultadosObtenido = new List<resultview>();
+            resultadosObtenido = managerDBOpenf.getResultados(int.Parse(tranIncompleta.Siapsid));
+            PeticionEntrante peticionActual = new PeticionEntrante();
+            peticionActual = parseadorHl7.leerPeticion(tranIncompleta.Peticion);
+
+
+
+            if (resultadosObtenido.Count() > 0)
+            {
+                resultadoRepuesta.Orc_1_codigoDeControl = "NW";
+                resultadoRepuesta.Orc_2_IdSolicitudSiaps = tranIncompleta.Siapsid;
+                resultadoRepuesta.Orc_5_EstatusOrden = "CM";
+                resultadoRepuesta.Orc_9_FechaDeEnvio = now.ToString("yyyyMMddHHmm");
+
+
+                //resultadosObtenido = managerDBOpenf.getResultados(int.Parse(tranIncompleta.Respuesta));
+
+                foreach (resultview resultadoActual in resultadosObtenido)
+                {
+                    if (!orcCargado)
+                    {
+                        resultadoRepuesta.Orc_12_1_CodigoProfesional = resultadoActual.Responsable;
+                        resultadoRepuesta.Orc_12_2_NombreProfesional = managerDBOpenf.getEncargadoName(resultadoActual.Responsable);
+                        string orc = @"ORC|" + resultadoRepuesta.Orc_1_codigoDeControl + "|" + resultadoRepuesta.Orc_2_IdSolicitudSiaps + "|||" + resultadoRepuesta.Orc_5_EstatusOrden + "||||" + resultadoRepuesta.Orc_9_FechaDeEnvio + "|||" + resultadoRepuesta.Orc_12_1_CodigoProfesional + "^" + resultadoRepuesta.Orc_12_2_NombreProfesional + "_z";
+                        respuesta = msh + orc;
+                        orcCargado = true;
+                    }
+
+                    //Seccione de los OBR
+                    foreach (Peticion_obr obrActualPeticion in peticionActual.ListaORB)
+                    {
+                        int contadorObx = 2;
+                        Repuesta_Orb nuevaObrResult = new Repuesta_Orb();
+                        nuevaObrResult.Obr_1_IDOBR = contadorObr;
+                        nuevaObrResult.Obr_2_PlacerOrdeNumber = resultadoActual.Parametro;
+                        nuevaObrResult.Obr_4_1_Identifier = managerDBOpenf.getExamenId(resultadoActual.Estudio);
+                        nuevaObrResult.Obr_4_2_Text = managerDBOpenf.getExamenName(resultadoActual.Estudio);
+                        nuevaObrResult.Obr_4_3_NameOfCodingSystem = "L";
+                        nuevaObrResult.Obr_4_4_AlternateIdentifier = managerDBOpenf.getAbreviado(resultadoActual.Parametro);
+                        nuevaObrResult.Obr_4_5_AlternateText = nuevaObrResult.Obr_4_2_Text;
+                        nuevaObrResult.Obr_8_ObservationEndDateTime = resultadoActual.Fecha.ToString();
+                        nuevaObrResult.Obr_10_CollectorIdentifier = obrActualPeticion.Obr10_CollectorIdentifier;
+                        nuevaObrResult.Obr_16_1_IdNumber = peticionActual.Orc12_1_idNumber;
+                        nuevaObrResult.Obr_16_2_FamilyName = peticionActual.Orc12_2_familyName;
+                        nuevaObrResult.Obr_22_ResultReptStatusChangeDateTime = now.ToString("yyyMMddHHmm");
+                        nuevaObrResult.Obr_24_DiagnosticServiceID = "CH";//REVISAR ESTOOOOOOOOOOOOOOOO
+                        nuevaObrResult.Obr_25_ResultStatus = "F";
+
+
+
+                        Respuesta_obx_cualitativo nuevaObxCualitativo = new Respuesta_obx_cualitativo();
+                        nuevaObxCualitativo.Obx_1_IdObx = "1";
+                        nuevaObxCualitativo.Obx_2_TipoDato = "ST";
+                        nuevaObxCualitativo.Obx_3_IdExamenSolicitado = nuevaObrResult.Obr_4_1_Identifier;
+                        
+               
+
+                        foreach (resultview resultadoObxleido in resultadosObtenido)
+                        {
+
+                            Respuesta_obx nuevoObxCuantitativo = new Respuesta_obx();
+                            if (resultadoObxleido.Estudio == resultadoActual.Estudio)
+                            {
+                                nuevoObxCuantitativo.Obx_1_ObxId = contadorObx.ToString();
+                                nuevoObxCuantitativo.Obx_2_ValueType = "NM";
+                                nuevoObxCuantitativo.Obx_3_1_Identifier = nuevaObrResult.Obr_4_1_Identifier;
+                                nuevoObxCuantitativo.Obx_3_2_text = nuevaObrResult.Obr_4_2_Text;
+                                nuevoObxCuantitativo.Obx_4_observationSubid = "Instrumento";
+                                nuevoObxCuantitativo.Obx_5_ObservationValue = resultadoObxleido.Resultado;
+                                nuevoObxCuantitativo.Obx_6_units = managerDBOpenf.getUnitstest(nuevaObrResult.Obr_2_PlacerOrdeNumber);
+
+                                string fechaNacimiento = peticionActual.Pid7_datetimeBirth;
+                                DateTime nacimiento = DateTime.ParseExact(fechaNacimiento + " 00:00:00", "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                                DateTime fecha_Actual = DateTime.Now;
+
+                                int edadDias = (fecha_Actual - nacimiento).Days;
+
+                                Rango rangosObtenidos = managerDBOpenf.getRangos(int.Parse(nuevaObrResult.Obr_2_PlacerOrdeNumber), edadDias, float.Parse(resultadoObxleido.Resultado));
+
+                                nuevoObxCuantitativo.Obx_7_rangeReference = rangosObtenidos.RangoInferior.ToString() + " - " + rangosObtenidos.RangoSuperior.ToString();
+                                nuevoObxCuantitativo.Obx_11_ObservationResultStatus = "F";
+                                nuevoObxCuantitativo.Obx_14_dateofObservation = nuevaObrResult.Obr_8_ObservationEndDateTime;
+
+                                nuevaObrResult.ListObxCuantitativos.Add(nuevoObxCuantitativo);
+                                contadorObx++;
+
+
+                                nuevaObxCualitativo.Obx_4_IdDelResultado = rangosObtenidos.IdComentario.ToString();//revisar
+                                nuevaObxCualitativo.Obx_5_ResultadoCualitativo = rangosObtenidos.Comentario;//revisar
+                            }
+                        }
+                        nuevaObrResult.Obx_Cualitativo = nuevaObxCualitativo;
+                        resultadoRepuesta.ListadDeRespuestas.Add(nuevaObrResult);
+                        string obr = @"OBR|" + nuevaObrResult.Obr_1_IDOBR + "|" + nuevaObrResult.Obr_2_PlacerOrdeNumber + "||" + nuevaObrResult.Obr_4_1_Identifier + "^" + nuevaObrResult.Obr_4_2_Text + "^L^" + nuevaObrResult.Obr_4_4_AlternateIdentifier + "^" + nuevaObrResult.Obr_4_5_AlternateText + "||||" + nuevaObrResult.Obr_8_ObservationEndDateTime + "||" + nuevaObrResult.Obr_10_CollectorIdentifier + "||||||" + resultadoRepuesta.Orc_12_1_CodigoProfesional + "^" + resultadoRepuesta.Orc_12_2_NombreProfesional + "||||||" + nuevaObrResult.Obr_22_ResultReptStatusChangeDateTime + "||" + nuevaObrResult.Obr_24_DiagnosticServiceID + "|" + nuevaObrResult.Obr_25_ResultStatus + "_z";
+                        respuesta += obr;
+                        string obxCuali = @"OBX|" + nuevaObrResult.Obx_Cualitativo.Obx_1_IdObx + "|" + nuevaObrResult.Obx_Cualitativo.Obx_2_TipoDato + "|" + nuevaObrResult.Obx_Cualitativo.Obx_3_IdExamenSolicitado + "|" + nuevaObrResult.Obx_Cualitativo.Obx_4_IdDelResultado + "|" + nuevaObxCualitativo.Obx_5_ResultadoCualitativo + "_z";
+                        respuesta += obxCuali;
+                        string obx = "";
+                        foreach (Repuesta_Orb res in resultadoRepuesta.ListadDeRespuestas)
+                        {
+                            foreach (Respuesta_obx resultObx in res.ListObxCuantitativos)
+                            {
+                                obx = @"OBX|" + resultObx.Obx_1_ObxId + "|" + resultObx.Obx_2_ValueType + "|" + resultObx.Obx_3_1_Identifier + "^" + resultObx.Obx_3_2_text + "|" + resultObx.Obx_4_observationSubid + "|" + resultObx.Obx_5_ObservationValue + "|" + resultObx.Obx_6_units + "|" + resultObx.Obx_7_rangeReference + "||||" + resultObx.Obx_11_ObservationResultStatus + "|||" + resultObx.Obx_14_dateofObservation + "_z";
+                                //contadorObx++;
+                                respuesta += obx;
+                            }
+                        }
+
+                        contadorObr++;
+                    }
+
+                }//Foreach de resultados
+
+
+            }//end if resultado==null
+
+            if (respuesta != "")
+                managerDBOhl7.actualizarCompletas(tranIncompleta.Indice1, respuesta);
+            respuesta = "";
+            resultadoRepuesta = new Repuesta();
+            orcCargado = false;
+        }//end foreach Transacciones Incompletas
+    }//End GenerarRespuesta2
+        
+
+    }
+
