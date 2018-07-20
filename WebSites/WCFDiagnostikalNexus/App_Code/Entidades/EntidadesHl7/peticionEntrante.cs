@@ -16,6 +16,7 @@ public class PeticionEntrante
     private string msh4_sendingFacility; //Lugar de procedencia de peticion
     private string msh5_receivingApplication;  //Aplicacion que recibe
     private string msh6_recivingFacilty; //
+    private string msh6_1_idSuministrasnte;
     private string msh7_dateTimeMessage;
     //Tipo de peticion cabecera segun la cabecera msh9> informacion del tipo 
     private string msh9_1_messageCode; //deberian ser OML ya que todos son de laboratorio.
@@ -581,6 +582,19 @@ public class PeticionEntrante
         set
         {
             listaspm = value;
+        }
+    }
+
+    public string Msh6_1_idSuministrasnte
+    {
+        get
+        {
+            return msh6_1_idSuministrasnte;
+        }
+
+        set
+        {
+            msh6_1_idSuministrasnte = value;
         }
     }
 }

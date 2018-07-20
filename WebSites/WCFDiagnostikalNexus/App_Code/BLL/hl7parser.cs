@@ -31,7 +31,8 @@ public class hl7parser
         nuevaPeticion.Msh3_sendingApplication = mshSegment.Field(3).ToString();
         nuevaPeticion.Msh4_sendingFacility = mshSegment.Field(4).ToString();
         nuevaPeticion.Msh5_receivingApplication = mshSegment.Field(5).ToString();
-        nuevaPeticion.Msh6_recivingFacilty = mshSegment.Field(6).ToString();
+        nuevaPeticion.Msh6_recivingFacilty = mshSegment.Field(6).Component(2).ToString();
+        nuevaPeticion.Msh6_1_idSuministrasnte = mshSegment.Field(6).Component(1).ToString();
         nuevaPeticion.Msh7_dateTimeMessage = mshSegment.Field(7).ToString();
         nuevaPeticion.Msh9_1_messageCode = mshSegment.Field(9).Component(1).ToString();
         nuevaPeticion.Msh9_2_triggerEvent = mshSegment.Field(9).Component(2).ToString();
@@ -132,6 +133,7 @@ public class hl7parser
         nuevaPeticion.Msh4_sendingFacility = mshSegment.Field(4).ToString();
         nuevaPeticion.Msh5_receivingApplication = mshSegment.Field(5).ToString();
         nuevaPeticion.Msh6_recivingFacilty = mshSegment.Field(6).ToString();
+        nuevaPeticion.Msh6_1_idSuministrasnte = mshSegment.Field(6).Component(1).ToString();
         nuevaPeticion.Msh7_dateTimeMessage = mshSegment.Field(7).ToString();
         nuevaPeticion.Msh9_1_messageCode = mshSegment.Field(9).Component(1).ToString();
         nuevaPeticion.Msh9_2_triggerEvent = mshSegment.Field(9).Component(2).ToString();
@@ -213,7 +215,7 @@ public class hl7parser
         }
 
         //  System.Diagnostics.Debug.WriteLine("Cantidad segmegmentos SPM:" + spmSegment.Count());
-        mangerDBhl7.guardarPeticion(peticion, obrSegment.Count(),int.Parse(nuevaPeticion.Orc4_placerGroupNumer), nuevaPeticion.Orc2_placerOrderNumer); //guardar peticion en la base del servicio web
+        mangerDBhl7.guardarPeticion(peticion, obrSegment.Count(),int.Parse(nuevaPeticion.Orc4_placerGroupNumer), nuevaPeticion.Orc2_placerOrderNumer,int.Parse(nuevaPeticion.Msh10_messageControlID)); //guardar peticion en la base del servicio web
         //foreach (Peticion_spm)
         if (managerDBopenf.nuevaPeticion(nuevaPeticion))
         {
@@ -230,12 +232,7 @@ public class hl7parser
         return true;
     }
     
-    public string getRespuesta(int orden)
-    {
-        string mensaje = "";
 
-        return mensaje;
-    }
 
    
 

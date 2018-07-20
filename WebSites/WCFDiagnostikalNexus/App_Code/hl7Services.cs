@@ -162,10 +162,11 @@ public class hl7Services : System.Web.Services.WebService
     //***************************************************************************************END Ingeso de datos*********************************************************
 
     [WebMethod]
-    public void marcarEnvio(int id)
+    public string marcarEnvio(string idz)
     {
 
-        System.Diagnostics.Debug.WriteLine("EJECUTADO "+id);
+        System.Diagnostics.Debug.WriteLine("EJECUTADO "+idz);
+        return "Ejecutado " + idz;
     }
 
     [WebMethod]

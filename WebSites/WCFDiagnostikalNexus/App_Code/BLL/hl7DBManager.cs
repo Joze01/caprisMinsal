@@ -20,26 +20,26 @@ public class hl7DBManager
         //
     }
 
-    public Boolean guardarPeticion(String mensaje, int examenes, int orden, string idSiaps) {
+    public Boolean guardarPeticion(String mensaje, int examenes, int orden, string idSiaps, int area) {
         conhl7 = new Conexonhl7();
         int afectadas = 0;
         conhl7.conectar();
         cone = conhl7.getConexion();
-       
+        DateTime fechaActualCodigo = DateTime.Now;
         String query= "INSERT INTO transacciones(peticion,pruebas, orden, siapsid) VALUES (@Ppeticion, @Pexamenes, @Porden, @Psiapsid)";
         cmd =new SqlCommand(query, cone);
         cmd.Parameters.AddWithValue("@Ppeticion", mensaje);
         cmd.Parameters.AddWithValue("@Pexamenes", examenes);
-        cmd.Parameters.AddWithValue("@Porden", orden);
-        cmd.Parameters.AddWithValue("@Psiapsid", idSiaps);
+        string ordenFinal = fechaActualCodigo.ToString("yyMMdd") + idSiaps + area;
+        cmd.Parameters.AddWithValue("@Porden", ordenFinal);
+        cmd.Parameters.AddWithValue("@Psiapsid", ordenFinal);
         cmd.CommandType = CommandType.Text;
         afectadas = cmd.ExecuteNonQuery();
         if (afectadas > 0)
         {
             return true;
         }
-
-
+        cone.Close();
         return false;
     }
 
@@ -70,7 +70,7 @@ public class hl7DBManager
             listaPendiente.Add(transaccion);
         }
 
-
+        cone.Close();
         return listaPendiente;
     }
 
@@ -92,7 +92,7 @@ public class hl7DBManager
             return true;
         }
 
-
+        cone.Close();
         return false;
     }
 
@@ -114,7 +114,7 @@ public class hl7DBManager
             return true;
         }
 
-
+        cone.Close();
         return false;
     }
 
@@ -143,8 +143,8 @@ public class hl7DBManager
             actualizarCompletas(transaccion.Indice1, transaccion.Respuesta);
         }
 
-        
 
+        cone.Close();
         return listaCompletas;
     }
 
