@@ -4,30 +4,18 @@ using System.Linq;
 using System.Web;
 
 /// <summary>
-/// Descripción breve de Envio
+/// Descripción breve de Completas_Envio
 /// </summary>
-public class Envio
+public class Completas_Envio
 {
-    string mensaje;
-    int indice;
-    public Envio()
+
+    private int indice;
+
+    public Completas_Envio()
     {
         //
         // TODO: Agregar aquí la lógica del constructor
         //
-    }
-
-    public string Mensaje
-    {
-        get
-        {
-            return mensaje;
-        }
-
-        set
-        {
-            mensaje = value;
-        }
     }
 
     public int Indice

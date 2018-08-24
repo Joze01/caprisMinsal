@@ -15,9 +15,6 @@ public class openfDBManager
     SqlCommand cmd;
     public openfDBManager()
     {
-        //
-        // TODO: Agregar aquí la lógica del constructor
-        //
     }
     public Boolean nuevaPeticion(PeticionEntrante datos)
     {
@@ -296,6 +293,25 @@ public class openfDBManager
 
         return resultadosLista;
     }
+    public int cantidadRespuestas(int orden)
+    {
+        int resultado = 0;
+        conOpenf = new conexion();
+        conOpenf.conectar();
+        cone = conOpenf.getConexion();
+        string query = "select count(distinct(Estudio)) as cantidad from ResultHIS_view where Orden=" + orden;
+        cmd = new SqlCommand(query, cone);
+        SqlDataReader reader = cmd.ExecuteReader();
+        if (reader.Read())
+        {
+            resultado = int.Parse(reader["cantidad"].ToString());
+        }
+        conOpenf.desconectar();
+
+        return resultado;
+    }
+
+
     public List<resultview> getResultadosByEstudio(int orden,string prueba)
     {
       
@@ -356,7 +372,6 @@ public class openfDBManager
 
         return respuesta;
     }
-
     public subElemento getSubElemeto(string elementos,string tparam, string sexo, int edadDias) {
         subElemento resultado = new subElemento();
         int idEdad = 1;

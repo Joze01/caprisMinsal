@@ -53,7 +53,7 @@ public class hl7DBManager
         conhl7 = new Conexonhl7();
         conhl7.conectar();
         cone = conhl7.getConexion();
-        string query = "select * from transacciones where estado=0";
+        string query = "select * from transacciones where estado=0 or estado=1";
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
@@ -74,14 +74,44 @@ public class hl7DBManager
         return listaPendiente;
     }
 
+    public int cantidadResultados(int ordern)
+    {
+        int numeroRespuestas = 0;
+        
+        conhl7 = new Conexonhl7();
+        conhl7.conectar();
+        cone = conhl7.getConexion();
+        string query = "select pruebas from transacciones where orden="+ ordern;
+        cmd = new SqlCommand(query, cone);
+        SqlDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            numeroRespuestas = int.Parse(reader["pruebas"].ToString());
+        }
 
-    public Boolean actualizarCompletas(int id,string mensaje) {
+        cone.Close();
+        return numeroRespuestas;
+        
+    }
+
+    public Boolean actualizarCompletas(int id,string mensaje,int ordenn) {
+
+        openfDBManager managerOpenF = new openfDBManager();
+        String query = "";
+        if (managerOpenF.cantidadRespuestas(ordenn) == this.cantidadResultados(ordenn)) {
+            query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =3 WHERE Indice=" + id;
+        }
+        else
+        {
+            query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =1 WHERE Indice=" + id;
+        }
+
         conhl7 = new Conexonhl7();
         int afectadas = 0;
         conhl7.conectar();
         cone = conhl7.getConexion();
 
-        String query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =1 WHERE Indice="+id;
+
         cmd = new SqlCommand(query, cone);
         cmd.Parameters.AddWithValue("@PRespuesta", mensaje);
       
@@ -96,16 +126,16 @@ public class hl7DBManager
         return false;
     }
 
-    public Boolean actualizarEnviadas(int id, string mensaje)
+    public Boolean actualizarEnviadas(int id)
     {
         conhl7 = new Conexonhl7();
         int afectadas = 0;
         conhl7.conectar();
         cone = conhl7.getConexion();
 
-        String query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =2 WHERE Indice=" + id;
+        String query = "UPDATE transacciones SET estado =2 WHERE Indice=" + id;
         cmd = new SqlCommand(query, cone);
-        cmd.Parameters.AddWithValue("@PRespuesta", mensaje);
+  
 
         cmd.CommandType = CommandType.Text;
         afectadas = cmd.ExecuteNonQuery();
@@ -118,13 +148,29 @@ public class hl7DBManager
         return false;
     }
 
+    public Boolean isCompleta(int indice) {
+        List<transacciones> listaCompletas = new List<transacciones>();
+        conhl7 = new Conexonhl7();
+        conhl7.conectar();
+        cone = conhl7.getConexion();
+        string query = "select * from transacciones where estado=3 and indice="+indice;
+        cmd = new SqlCommand(query, cone);
+        SqlDataReader reader = cmd.ExecuteReader();
+        if (reader.Read())
+        {
+            return true;
+        }
+        cone.Close();
+        return false;
+        
+    }
 
     public List<transacciones> ObtenerCompletos() {
         List<transacciones> listaCompletas = new List<transacciones>();
         conhl7 = new Conexonhl7();
         conhl7.conectar();
         cone = conhl7.getConexion();
-        string query = "select * from transacciones where estado=1";
+        string query = "select * from transacciones where estado=1 or estado=3";
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
@@ -140,7 +186,7 @@ public class hl7DBManager
             transaccion.Siapsid = reader["siapsid"].ToString();
 
             listaCompletas.Add(transaccion);
-            actualizarCompletas(transaccion.Indice1, transaccion.Respuesta);
+            actualizarCompletas(transaccion.Indice1, transaccion.Respuesta,int.Parse(transaccion.Siapsid));
         }
 
 

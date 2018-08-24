@@ -162,11 +162,15 @@ public class hl7Services : System.Web.Services.WebService
     //***************************************************************************************END Ingeso de datos*********************************************************
 
     [WebMethod]
-    public string marcarEnvio(string idz)
+    public string marcarEnvio(string json_array)
     {
-
-        System.Diagnostics.Debug.WriteLine("EJECUTADO "+idz);
-        return "Ejecutado " + idz;
+        hl7DBManager manager = new hl7DBManager();
+        Completas_Envio envioCompletado;
+        envioCompletado= JsonConvert.DeserializeObject<Completas_Envio>(json_array);
+        if (manager.isCompleta(envioCompletado.Indice)) { 
+        manager.actualizarEnviadas(envioCompletado.Indice);
+        }
+        return "OK";
     }
 
     [WebMethod]
@@ -182,7 +186,9 @@ public class hl7Services : System.Web.Services.WebService
         {
             Envio nuevoEnvio = new Envio();
             nuevoEnvio.Mensaje = tran.Respuesta;
+            nuevoEnvio.Indice = tran.Indice1;
             arregloRespuestas.Add(nuevoEnvio);
+
             //managerHl7.actualizarEnviadas(tran.Indice1, tran.Respuesta);
         }
 
