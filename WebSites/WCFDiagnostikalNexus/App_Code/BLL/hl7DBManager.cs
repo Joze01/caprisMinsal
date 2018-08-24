@@ -53,7 +53,7 @@ public class hl7DBManager
         conhl7 = new Conexonhl7();
         conhl7.conectar();
         cone = conhl7.getConexion();
-        string query = "select * from transacciones where estado=0 or estado=1";
+        string query = "select * from transacciones where estado=0 or estado=1 or estado=2";
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
