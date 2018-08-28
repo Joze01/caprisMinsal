@@ -16,7 +16,11 @@ public class hl7parser
     {
       
     }
-
+    /// <summary>
+    /// Mensaje de peticion entrante  y retorna el mensaje decodificado segun el template de la clase PeticionEntrante.
+    /// </summary>
+    /// <param name="peticion">String de entrada HL7</param>
+    /// <returns>Retorna un objeto de tipo entidad de Peticion Entrante.</returns>
     public PeticionEntrante leerPeticion(string peticion)
     {
         PeticionEntrante nuevaPeticion = new PeticionEntrante();
