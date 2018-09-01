@@ -5,7 +5,7 @@ using System.Web;
 using System.Data.SqlClient;
 using System.Data;
 /// <summary>
-/// Descripción breve de hl7DBManager
+/// CLASE DE MANEJO DE LA LOGICA DE NEGOCIOS DE LA BASE HL7
 /// </summary>
 public class hl7DBManager
 {
@@ -36,13 +36,14 @@ public class hl7DBManager
         conhl7.conectar();
         cone = conhl7.getConexion();
         DateTime fechaActualCodigo = DateTime.Now;
-        String query= "INSERT INTO transacciones(peticion,pruebas, orden, siapsid) VALUES (@Ppeticion, @Pexamenes, @Porden, @Psiapsid)";
+        String query= "INSERT INTO transacciones(peticion,pruebas, orden, siapsid, orc) VALUES (@Ppeticion, @Pexamenes, @Porden, @Psiapsid, @Porc)";
         cmd =new SqlCommand(query, cone);
         cmd.Parameters.AddWithValue("@Ppeticion", mensaje);
         cmd.Parameters.AddWithValue("@Pexamenes", examenes);
         string ordenFinal = fechaActualCodigo.ToString("yyMMdd") + idSiaps + area;
         cmd.Parameters.AddWithValue("@Porden", ordenFinal);
         cmd.Parameters.AddWithValue("@Psiapsid", ordenFinal);
+        cmd.Parameters.AddWithValue("@Porc", orden);
         cmd.CommandType = CommandType.Text;
         afectadas = cmd.ExecuteNonQuery();
         if (afectadas > 0)
@@ -111,6 +112,11 @@ public class hl7DBManager
         
     }
 
+    /// <summary>
+    /// Funcion para obtener la cantidad de examenes que ya tienen respuesta.
+    /// </summary>
+    /// <param name="ordern"># de orden SIAPS</param>
+    /// <returns>Retorna de respuesta que tiene cada peticion.</returns>
     public int cantidadResultadosCompletosOld(int ordern)
     {
         int numeroRespuestas = 0;
@@ -152,7 +158,7 @@ public class hl7DBManager
         }
         else
         {
-            if(cantidadPruebasCompletadasOld < cantidadPruebasCom) { 
+            if(cantidadPruebasCompletadasOld != cantidadPruebasCom) { 
             query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =1 WHERE Indice=" + id;
             }
         }
@@ -193,7 +199,7 @@ public class hl7DBManager
 
         String query = "UPDATE transacciones SET estado =2 WHERE Indice=" + id;
         cmd = new SqlCommand(query, cone);
-        System.Diagnostics.Debug.WriteLine("MARCADASSSSSSSSS");
+        System.Diagnostics.Debug.WriteLine("checked: "+id);
 
 
         cmd.CommandType = CommandType.Text;
@@ -234,10 +240,11 @@ public class hl7DBManager
     /// <returns>Lista de Entidades Transaccion.</returns>
     public List<transacciones> ObtenerCompletos() {
         List<transacciones> listaCompletas = new List<transacciones>();
+        openfDBManager managerOpenF = new openfDBManager();
         conhl7 = new Conexonhl7();
         conhl7.conectar();
         cone = conhl7.getConexion();
-        string query = "select * from transacciones where estado=3";
+        string query = "select * from transacciones where estado=3 or estado=1 or estado=2";
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
@@ -246,14 +253,18 @@ public class hl7DBManager
             transaccion.Indice1 = int.Parse(reader["Indice"].ToString());
             transaccion.Peticion = reader["peticion"].ToString();
             transaccion.Respuesta = reader["Respuesta"].ToString();
-            transaccion.Estado = 2;
+            transaccion.Estado = int.Parse(reader["estado"].ToString());
             transaccion.Fecha = reader.GetDateTime(4);
             transaccion.Pruebas = int.Parse(reader["pruebas"].ToString());
             transaccion.Orden = reader["orden"].ToString();
             transaccion.Siapsid = reader["siapsid"].ToString();
+            int cantidadPruebasCompletadasOld = this.cantidadResultadosCompletosOld(int.Parse(transaccion.Siapsid));
+            int cantidadPruebasCom = managerOpenF.cantidadRespuestas(int.Parse(transaccion.Siapsid));
 
-            listaCompletas.Add(transaccion);
-            actualizarCompletas(transaccion.Indice1, transaccion.Respuesta,int.Parse(transaccion.Siapsid));
+            if (cantidadPruebasCompletadasOld != cantidadPruebasCom || transaccion.Estado == 3) { 
+                listaCompletas.Add(transaccion);
+                actualizarCompletas(transaccion.Indice1, transaccion.Respuesta, int.Parse(transaccion.Siapsid));
+            }
         }
 
 

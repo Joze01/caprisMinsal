@@ -261,7 +261,7 @@ public class Util
 
                                     int idComentario = 1;
                                     ResultadosObx[ResultadosObx.Count - 1].Resultado = ResultadosObx[ResultadosObx.Count - 1].Resultado.Replace(" ", "");
-                                    if (ResultadosObx[ResultadosObx.Count - 1].Resultado == "Normal" || ResultadosObx[ResultadosObx.Count - 1].Resultado == "normal")
+                                    if (ResultadosObx[ResultadosObx.Count - 1].Resultado.ToUpper() == "NORMAL")
                                     {
                                         idComentario = 1;
                                     }
@@ -271,7 +271,7 @@ public class Util
                                     }
 
                                     nuevaObxCualitativo.Obx_4_IdDelResultado = idComentario.ToString();//revisar
-                                    nuevaObxCualitativo.Obx_5_ResultadoCualitativo = ResultadosObx[ResultadosObx.Count - 1].Resultado; //revisar
+                                    nuevaObxCualitativo.Obx_5_ResultadoCualitativo = ResultadosObx[ResultadosObx.Count - 1].Resultado.ToUpper(); //revisar
 
                                     contadorObx++;
                                 }

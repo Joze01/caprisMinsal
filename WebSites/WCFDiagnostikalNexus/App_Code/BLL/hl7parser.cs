@@ -229,7 +229,12 @@ public class hl7parser
         return false;
     }
 
-
+    /// <summary>
+    /// Funcion en desuso.
+    /// </summary>
+    /// <param name="mensaje"></param>
+    /// <param name="md5"></param>
+    /// <returns></returns>
     public Boolean isValid(string mensaje, string md5)
     {
        

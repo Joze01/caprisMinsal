@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Data;
 /// <summary>
-/// Descripción breve de openfDBManager
+/// CLASE DE LOGICA DE NEGOCIOS DE LA BASE OPENF
 /// </summary>
 public class openfDBManager
 {
@@ -16,6 +16,11 @@ public class openfDBManager
     public openfDBManager()
     {
     }
+    /// <summary>
+    /// Funcion para registrar la peticion es HI2LIS de OPENF
+    /// </summary>
+    /// <param name="datos">peticin entrante, de tipo entidad PeticionEntrante</param>
+    /// <returns>Retorna True or False</returns>
     public Boolean nuevaPeticion(PeticionEntrante datos)
     {
         conOpenf = new conexion();
@@ -97,6 +102,11 @@ public class openfDBManager
 
             return true;
     }
+    /// <summary>
+    /// FUncion auxiliar para obtener el nombre de encargado by name.
+    /// </summary>
+    /// <param name="id">Identificador del empleado</param>
+    /// <returns>Retorna True or False si se completa</returns>
     public string getEncargadoName(string id) {
         string encargadoName = "";
         List<resultview> listadoResultados = new List<resultview>();
@@ -115,6 +125,11 @@ public class openfDBManager
         cone.Close();
         return encargadoName;
     }
+    /// <summary>
+    /// Funcion para obtener los nombre del examen
+    /// </summary>
+    /// <param name="id">Id del examen (Clase name en la tabla operfil)</param>
+    /// <returns>retorna el nombre del examen asociado al Id</returns>
     public string getExamenName(string id)
     {
         string examenName = "";
@@ -137,6 +152,11 @@ public class openfDBManager
         cone.Close();
         return examenName;
     }
+    /// <summary>
+    /// Obtiene el Id del examen
+    /// </summary>
+    /// <param name="cod">Codigo de examen (clase_name en operfil)</param>
+    /// <returns></returns>
     public string getExamenId(string cod) {
         string examenId = "";
         List<resultview> listadoResultados = new List<resultview>();
@@ -158,6 +178,11 @@ public class openfDBManager
 
         return examenId;
     }
+    /// <summary>
+    /// Extrae las unidades de medida para cada elemento del hl7
+    /// </summary>
+    /// <param name="cod">codigo de examen (par_codigo en operfil)</param>
+    /// <returns>Retorna las unidades de medida de cada elemento</returns>
     public string getUnitstest(string cod)
     {
         string resultado = "";
@@ -178,6 +203,13 @@ public class openfDBManager
         cone.Close();
         return resultado;
     }
+    /// <summary>
+    /// Obtener los rangos para las respuestas y la validacion de resultado
+    /// </summary>
+    /// <param name="cod">Codigo del del examen</param>
+    /// <param name="EdadDias">Edad de la persona en dias</param>
+    /// <param name="lectura">Cantidad leida en la vista de resultados</param>
+    /// <returns>Retorna una entidad llamada Rangos con los elementos necesarios</returns>
     public Rango getRangos(int cod,int EdadDias,float lectura) {
         Rango rangosAdecuados=new Rango();
 
@@ -242,6 +274,11 @@ public class openfDBManager
         return rangosAdecuados;
 
     } //min y max 
+    /// <summary>
+    /// Obtener el abreviado del examen
+    /// </summary>
+    /// <param name="id">codigo del examen</param>
+    /// <returns></returns>
     public string getAbreviado(string id) {
         string abreviatura = "";
         List<resultview> listadoResultados = new List<resultview>();
@@ -263,6 +300,11 @@ public class openfDBManager
 
         return abreviatura;
     }
+    /// <summary>
+    /// Funcion para obtener los resultados por ordenes 
+    /// </summary>
+    /// <param name="orden"># de orden SIAP </param>
+    /// <returns>Retorna una lista de entidades ResultVIew(resultados de la vista) </returns>
     public List<resultview> getResultados(int orden) {
         resultview resultado = new resultview();
         List<resultview> resultadosLista = new List<resultview>();
@@ -290,9 +332,14 @@ public class openfDBManager
             resultado.T_validado = reader["t_validado"].ToString();
             resultadosLista.Add(resultado);
         }
-
+        cone.Close();
         return resultadosLista;
     }
+    /// <summary>
+    /// funciona para obtener la cantidad de respuesta que ya posee una orden
+    /// </summary>
+    /// <param name="orden"># de orden SIAP</param>
+    /// <returns>retorna un entero</returns>
     public int cantidadRespuestas(int orden)
     {
         int resultado = 0;
@@ -307,11 +354,15 @@ public class openfDBManager
             resultado = int.Parse(reader["cantidad"].ToString());
         }
         conOpenf.desconectar();
-
+        cone.Close();
         return resultado;
     }
-
-
+    /// <summary>
+    /// obtener los resultados de cada examen, de la una orden. 
+    /// </summary>
+    /// <param name="orden"># de orden SIAP</param>
+    /// <param name="prueba">Codigo de prueba</param>
+    /// <returns>Retorna una lista de entidades de tipo ResultView</returns>
     public List<resultview> getResultadosByEstudio(int orden,string prueba)
     {
       
@@ -343,9 +394,14 @@ public class openfDBManager
             resultado.T_validado = reader["t_validado"].ToString();
             resultadosLista.Add(resultado);
         }
-
+        cone.Close();
         return resultadosLista;
     }
+    /// <summary>
+    /// Funcion para generar el tipo de examen en la trama
+    /// </summary>
+    /// <param name="codigoExamen"> codigo de examen</param>
+    /// <returns>Retorna el string segun el area</returns>
     public string getTipoExame(string codigoExamen)
     {
         string respuesta = "";
@@ -368,10 +424,22 @@ public class openfDBManager
         {
             respuesta = "HM";
         }
+        else
+        {
+            respuesta = "U";
+        }
         cone.Close();
 
         return respuesta;
     }
+    /// <summary>
+    /// retorna sub elemtnos de una prueba
+    /// </summary>
+    /// <param name="elementos"> codigo de examen</param>
+    /// <param name="tparam"> Tparam de la prueba</param>
+    /// <param name="sexo">Sexo de a persona</param>
+    /// <param name="edadDias">Edad en dias de la persona</param>
+    /// <returns>retorna un objeto de tipo entidad de SubElemento</returns>
     public subElemento getSubElemeto(string elementos,string tparam, string sexo, int edadDias) {
         subElemento resultado = new subElemento();
         int idEdad = 1;
