@@ -45,8 +45,8 @@ public class openfDBManager
             cmd = null;
             //query = "INSERT INTO HIS2LIS (Orden, FSolicitud, Origen, Servicio, Doctor, Libre, Identificacion, Nombre, Apell1, Apell2, Sexo, Codigo, Edad) " +
                // "VALUES (@POrdens, '"+ fechaFormateada + "' , @POrigens, @PServicios, @PDoctors, @Plibres, @PIdentificacions, @PNombres, @PApell1s, @PApell2s, @PSexos, @PCodigos, @Pedad)";
-            query = "INSERT INTO HIS2LIS (Orden, FSolicitud, Origen, Servicio, Doctor, Libre, Identificacion, Nombre, Apell1, Apell2, Sexo, Codigo) " +
-                "VALUES (@POrdens, '" + fechaFormateada + " 00:00:00' , @POrigens, @PServicios, @PDoctors, @Plibres, @PIdentificacions, @PNombres, @PApell1s, @PApell2s, @PSexos, @PCodigos)";
+            query = "INSERT INTO HIS2LIS (Orden, FSolicitud, Origen, Servicio, Doctor, Libre, Identificacion, Nombre, Apell1, Apell2, Sexo, Codigo, Edad) " +
+                "VALUES (@POrdens, '" + fechaFormateada + " 00:00:00' , @POrigens, @PServicios, @PDoctors, @Plibres, @PIdentificacions, @PNombres, @PApell1s, @PApell2s, @PSexos, @PCodigos, @Pedad)";
 
             try
             {
@@ -66,7 +66,7 @@ public class openfDBManager
                 cmd.Parameters.Add(new SqlParameter("@PNombres", datos.Pid5_2_givenName +" "+ datos.Pid5_3_secondName));
                 cmd.Parameters.Add(new SqlParameter("@PApell1s", apellidos[0])); //Hacer split de los apellidos
                 cmd.Parameters.Add(new SqlParameter("@PApell2s", apellidos[1]));
-                //cmd.Parameters.Add(new SqlParameter("@Pedad", edad));
+                cmd.Parameters.Add(new SqlParameter("@Pedad", edad));
                 //cmd.Parameters.Add(new SqlParameter("@Pedad", null));
                 if (datos.Pid8_AdministrativeSex == "2")
                 {
@@ -476,6 +476,52 @@ public class openfDBManager
         cone.Close();
         
         return resultado;
+    }
+
+
+    public Boolean checkServicio(string id)
+    {
+        bool result = false;
+        conOpenf = new conexion();
+        conOpenf.conectar();
+        cone = conOpenf.getConexion();
+        string query = "select count(*) from oaux_origen where clase_name="+id;
+        cmd = new SqlCommand(query, cone);
+        SqlDataReader reader = cmd.ExecuteReader();
+        if (reader.Read())
+        {
+            result = true;
+        }
+        conOpenf.desconectar();
+        cone.Close();
+        return result;
+    }
+    public Boolean checkOrigen(string id)
+    {
+        bool result = false;
+        conOpenf = new conexion();
+        conOpenf.conectar();
+        cone = conOpenf.getConexion();
+        string query = "select count(*) from oaux_origen where clase_name=" + id;
+        cmd = new SqlCommand(query, cone);
+        SqlDataReader reader = cmd.ExecuteReader();
+        if (reader.Read())
+        {
+            result = true;
+        }
+        conOpenf.desconectar();
+        cone.Close();
+        return result;
+    }
+
+    public void newOrigen(string id, string nombre)
+    {
+
+    }
+
+    public void newService(string id, string nombre, string origen)
+    {
+
     }
 
 }

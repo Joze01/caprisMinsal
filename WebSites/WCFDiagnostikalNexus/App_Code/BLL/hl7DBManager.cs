@@ -43,7 +43,7 @@ public class hl7DBManager
         string ordenFinal = fechaActualCodigo.ToString("yyMMdd") + idSiaps + area;
         cmd.Parameters.AddWithValue("@Porden", ordenFinal);
         cmd.Parameters.AddWithValue("@Psiapsid", ordenFinal);
-        cmd.Parameters.AddWithValue("@Porc", orden);
+        cmd.Parameters.AddWithValue("@Porc", idSiaps);
         cmd.CommandType = CommandType.Text;
         afectadas = cmd.ExecuteNonQuery();
         if (afectadas > 0)

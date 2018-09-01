@@ -20,7 +20,7 @@ public class Conexonhl7
         try
         {
             desconectar();
-            con = new SqlConnection("Data Source=localhost;Initial Catalog=openf;aUser id=admin; Password=123");
+            con = new SqlConnection("Data Source=localhost;Initial Catalog=HL7;User id=admin; Password=123");
             con.Open();
         }
         catch (Exception ex)

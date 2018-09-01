@@ -19,11 +19,11 @@ public class Util
     public List<string> getRangos(int edadDias, string lectura)
     {
         List<string> comentarios = new List<string>();
-        string id="";
-        string valorcomentario="";
+        string id = "";
+        string valorcomentario = "";
         float rangoUtilMax = 0;
         float rangoUtilMin = 0;
-        
+
 
         comentarios.Add(id);
         comentarios.Add(valorcomentario);
@@ -32,8 +32,9 @@ public class Util
         return comentarios;
     }
 
-    public void generarRespuestas() {
-        
+    public void generarRespuestas()
+    {
+
         openfDBManager managerDBOpenf = new openfDBManager();
         hl7DBManager managerDBOhl7 = new hl7DBManager();
         Repuesta resultadoRepuesta = new Repuesta();
@@ -41,7 +42,7 @@ public class Util
         Util utilidades = new Util();
         DateTime now = DateTime.Now;
         string respuesta = "";
-        List<transacciones> listaPendientes =new List<transacciones>();
+        List<transacciones> listaPendientes = new List<transacciones>();
         List<resultview> resultadosObtenido = new List<resultview>();
         Boolean orcCargado = false;
         //now.ToString("yyyyMMddHHmm"); // case sensitive
@@ -63,8 +64,9 @@ public class Util
 
 
         listaPendientes = managerDBOhl7.obtenerPendientes();
-        
-        foreach (transacciones tranIncompleta in listaPendientes ) {
+
+        foreach (transacciones tranIncompleta in listaPendientes)
+        {
             int contadorObr = 1;
             orcCargado = false;
             respuesta = "";
@@ -75,7 +77,8 @@ public class Util
 
 
 
-            if (resultadosObtenido.Count()>0) { 
+            if (resultadosObtenido.Count() > 0)
+            {
                 resultadoRepuesta.Orc_1_codigoDeControl = "NW";
                 resultadoRepuesta.Orc_2_IdSolicitudSiaps = tranIncompleta.Siapsid;
                 resultadoRepuesta.Orc_5_EstatusOrden = "CM";
@@ -123,7 +126,7 @@ public class Util
                         {
                             resultadoRepuesta.Orc_12_1_CodigoProfesional = ResultadosObx[0].Responsable;
                             resultadoRepuesta.Orc_12_2_NombreProfesional = managerDBOpenf.getEncargadoName(ResultadosObx[0].Responsable);
-                            string orc = @"ORC|" + resultadoRepuesta.Orc_1_codigoDeControl + "|" + resultadoRepuesta.Orc_2_IdSolicitudSiaps + "|||" + resultadoRepuesta.Orc_5_EstatusOrden + "||||" + resultadoRepuesta.Orc_9_FechaDeEnvio + "|||" + resultadoRepuesta.Orc_12_1_CodigoProfesional + "^" + resultadoRepuesta.Orc_12_2_NombreProfesional + "_z";
+                            string orc = @"ORC|" + resultadoRepuesta.Orc_1_codigoDeControl + "|" +peticionActual.Orc2_placerOrderNumer + "|||" + resultadoRepuesta.Orc_5_EstatusOrden + "||||" + resultadoRepuesta.Orc_9_FechaDeEnvio + "|||" + resultadoRepuesta.Orc_12_1_CodigoProfesional.Remove(0,1) + "^" + resultadoRepuesta.Orc_12_2_NombreProfesional + "_z";
 
                             resultadoRepuesta.Msh_1_fielSeparador = "|";
                             resultadoRepuesta.Msh_2_EncodeingCaracters = @"^~\&";
@@ -261,7 +264,7 @@ public class Util
 
                                     int idComentario = 1;
                                     ResultadosObx[ResultadosObx.Count - 1].Resultado = ResultadosObx[ResultadosObx.Count - 1].Resultado.Replace(" ", "");
-                                    if (ResultadosObx[ResultadosObx.Count - 1].Resultado.ToUpper() == "NORMAL")
+                                    if (ResultadosObx[ResultadosObx.Count - 1].Resultado == "Normal" || ResultadosObx[ResultadosObx.Count - 1].Resultado == "normal")
                                     {
                                         idComentario = 1;
                                     }
@@ -271,7 +274,7 @@ public class Util
                                     }
 
                                     nuevaObxCualitativo.Obx_4_IdDelResultado = idComentario.ToString();//revisar
-                                    nuevaObxCualitativo.Obx_5_ResultadoCualitativo = ResultadosObx[ResultadosObx.Count - 1].Resultado.ToUpper(); //revisar
+                                    nuevaObxCualitativo.Obx_5_ResultadoCualitativo = ResultadosObx[ResultadosObx.Count - 1].Resultado; //revisar
 
                                     contadorObx++;
                                 }
@@ -283,7 +286,7 @@ public class Util
 
                         //Impresion de obx y obrs
                         nuevaObrResult.Obx_Cualitativo = nuevaObxCualitativo;
-                        string obr = @"OBR|" + nuevaObrResult.Obr_1_IDOBR + "|" + nuevaObrResult.Obr_2_PlacerOrdeNumber + "||" + nuevaObrResult.Obr_4_1_Identifier + "^" + nuevaObrResult.Obr_4_2_Text + "^L^" + nuevaObrResult.Obr_4_4_AlternateIdentifier + "^" + nuevaObrResult.Obr_4_5_AlternateText + "||||" + nuevaObrResult.Obr_8_ObservationEndDateTime + "||" + nuevaObrResult.Obr_10_CollectorIdentifier + "||||||" + resultadoRepuesta.Orc_12_1_CodigoProfesional + "^" + resultadoRepuesta.Orc_12_2_NombreProfesional + "||||||" + nuevaObrResult.Obr_22_ResultReptStatusChangeDateTime + "||" + nuevaObrResult.Obr_24_DiagnosticServiceID + "|" + nuevaObrResult.Obr_25_ResultStatus + "_z";
+                        string obr = @"OBR|" + nuevaObrResult.Obr_1_IDOBR + "|" + nuevaObrResult.Obr_2_PlacerOrdeNumber + "||" + nuevaObrResult.Obr_4_1_Identifier + "^" + nuevaObrResult.Obr_4_2_Text + "^L^" + nuevaObrResult.Obr_4_4_AlternateIdentifier + "^" + nuevaObrResult.Obr_4_5_AlternateText + "||||" + nuevaObrResult.Obr_8_ObservationEndDateTime + "||" + nuevaObrResult.Obr_10_CollectorIdentifier + "||||||" + resultadoRepuesta.Orc_12_1_CodigoProfesional.Remove(0,1) + "^" + resultadoRepuesta.Orc_12_2_NombreProfesional + "||||||" + nuevaObrResult.Obr_22_ResultReptStatusChangeDateTime + "||" + nuevaObrResult.Obr_24_DiagnosticServiceID + "|" + nuevaObrResult.Obr_25_ResultStatus + "_z";
                         respuesta += obr;
                         string obxCuali = @"OBX|" + nuevaObrResult.Obx_Cualitativo.Obx_1_IdObx + "|" + nuevaObrResult.Obx_Cualitativo.Obx_2_TipoDato + "|" + nuevaObrResult.Obx_Cualitativo.Obx_3_IdExamenSolicitado + "|" + nuevaObrResult.Obx_Cualitativo.Obx_4_IdDelResultado + "|" + nuevaObxCualitativo.Obx_5_ResultadoCualitativo + "_z";
                         respuesta += obxCuali;
@@ -300,14 +303,14 @@ public class Util
             }//end if resultado==null
 
             if (respuesta != "")
-            managerDBOhl7.actualizarCompletas(tranIncompleta.Indice1, respuesta, int.Parse(tranIncompleta.Orden));
+                managerDBOhl7.actualizarCompletas(tranIncompleta.Indice1, respuesta, int.Parse(tranIncompleta.Orden));
             respuesta = "";
             resultadoRepuesta = new Repuesta();
             orcCargado = false;
         }//end foreach Transacciones Incompletas
     }
-      
 
 
-    }
+
+}
 
