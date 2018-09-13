@@ -90,11 +90,11 @@ public class openfDBManager
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                cone.Close();
+                conOpenf.desconectar();cone.Close();
             }
 
         }
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
         if (afectadas > 0)
             {
                 return true;
@@ -122,7 +122,7 @@ public class openfDBManager
         {
             encargadoName = reader["login_descripcion"].ToString();
         }
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
         return encargadoName;
     }
     /// <summary>
@@ -149,7 +149,7 @@ public class openfDBManager
 
 
 
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
         return examenName;
     }
     /// <summary>
@@ -174,7 +174,7 @@ public class openfDBManager
         }
 
 
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
 
         return examenId;
     }
@@ -197,10 +197,8 @@ public class openfDBManager
         {
             resultado = reader["unidades"].ToString();
         }
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
 
-
-        cone.Close();
         return resultado;
     }
     /// <summary>
@@ -270,7 +268,7 @@ public class openfDBManager
             rangosAdecuados.IdComentario = 3;
         }
 
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
         return rangosAdecuados;
 
     } //min y max 
@@ -296,7 +294,7 @@ public class openfDBManager
         }
 
 
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
 
         return abreviatura;
     }
@@ -332,7 +330,7 @@ public class openfDBManager
             resultado.T_validado = reader["t_validado"].ToString();
             resultadosLista.Add(resultado);
         }
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
         return resultadosLista;
     }
     /// <summary>
@@ -353,8 +351,8 @@ public class openfDBManager
         {
             resultado = int.Parse(reader["cantidad"].ToString());
         }
-        conOpenf.desconectar();
-        cone.Close();
+        
+        conOpenf.desconectar();cone.Close();
         return resultado;
     }
     /// <summary>
@@ -394,7 +392,7 @@ public class openfDBManager
             resultado.T_validado = reader["t_validado"].ToString();
             resultadosLista.Add(resultado);
         }
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
         return resultadosLista;
     }
     /// <summary>
@@ -428,7 +426,7 @@ public class openfDBManager
         {
             respuesta = "U";
         }
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
 
         return respuesta;
     }
@@ -473,7 +471,7 @@ public class openfDBManager
         }
 
 
-        cone.Close();
+        conOpenf.desconectar();cone.Close();
         
         return resultado;
     }
@@ -492,8 +490,8 @@ public class openfDBManager
         {
             result = true;
         }
-        conOpenf.desconectar();
-        cone.Close();
+      
+        conOpenf.desconectar();cone.Close();
         return result;
     }
     public Boolean checkOrigen(string id)
@@ -509,8 +507,8 @@ public class openfDBManager
         {
             result = true;
         }
-        conOpenf.desconectar();
-        cone.Close();
+   
+        conOpenf.desconectar();cone.Close();
         return result;
     }
 

@@ -50,7 +50,7 @@ public class hl7DBManager
         {
             return true;
         }
-        cone.Close();
+        conhl7.desconectar();cone.Close();
         return false;
     }
 
@@ -83,7 +83,7 @@ public class hl7DBManager
             listaPendiente.Add(transaccion);
         }
 
-        cone.Close();
+        conhl7.desconectar();cone.Close();
         return listaPendiente;
     }
 
@@ -106,8 +106,8 @@ public class hl7DBManager
         {
             numeroRespuestas = int.Parse(reader["pruebas"].ToString());
         }
-
-        cone.Close();
+        
+        conhl7.desconectar();cone.Close();;
         return numeroRespuestas;
         
     }
@@ -132,7 +132,7 @@ public class hl7DBManager
             numeroRespuestas = int.Parse(reader["completas"].ToString());
         }
 
-        cone.Close();
+        conhl7.desconectar();cone.Close();
         return numeroRespuestas;
 
     }
@@ -181,7 +181,7 @@ public class hl7DBManager
             return true;
         }
 
-        cone.Close();
+        conhl7.desconectar();cone.Close();
         return false;
     }
 
@@ -208,7 +208,7 @@ public class hl7DBManager
         {
             return true;
         }
-
+        conhl7.desconectar();
         cone.Close();
         return false;
     }
@@ -230,7 +230,7 @@ public class hl7DBManager
         {
             return true;
         }
-        cone.Close();
+        conhl7.desconectar();cone.Close();
         return false;
     }
 
@@ -268,7 +268,7 @@ public class hl7DBManager
         }
 
 
-        cone.Close();
+        conhl7.desconectar();cone.Close();
         return listaCompletas;
     }
 
@@ -296,7 +296,7 @@ public class hl7DBManager
             return true;
         }
 
-        cone.Close();
+        conhl7.desconectar();cone.Close();
         return false;
 
 

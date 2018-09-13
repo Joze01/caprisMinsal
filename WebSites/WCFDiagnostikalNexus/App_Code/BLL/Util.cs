@@ -250,8 +250,8 @@ public class Util
                                     int edadDias = (fecha_Actual - nacimiento).Days;
                                     Respuesta_obx nuevoObxCuantitativo = new Respuesta_obx();
                                     nuevoObxCuantitativo.Obx_1_ObxId = contadorObx.ToString();
-
-                                    Boolean isNumeric = resultadoAImprimir.Resultado.All(char.IsNumber);
+                                   
+                                    Boolean isNumeric = resultadoAImprimir.Resultado.All(char.IsDigit);
                                     if (isNumeric)
                                     {
                                         nuevoObxCuantitativo.Obx_2_ValueType = "NM";
@@ -269,14 +269,22 @@ public class Util
                                         }
                                         else
                                         {
+                                            if(resultadoAImprimir.Resultado!="")
                                             resultadoValue = float.Parse(resultadoAImprimir.Resultado);
                                         }
                                         //Resultado
                                         nuevoObxCuantitativo.Obx_5_ObservationValue = resultadoValue.ToString();
 
                                         nuevoObxCuantitativo.Obx_6_units = managerDBOpenf.getUnitstest(resultadoAImprimir.Parametro);
-                                        Rango rangosObtenidos = managerDBOpenf.getRangos(int.Parse(resultadoAImprimir.Parametro), edadDias, float.Parse(resultadoAImprimir.Resultado));
-                                        nuevoObxCuantitativo.Obx_7_rangeReference = rangosObtenidos.RangoInferior.ToString() + " - " + rangosObtenidos.RangoSuperior.ToString();
+                                        if (resultadoAImprimir.Resultado != "")
+                                        {
+                                            Rango rangosObtenidos = managerDBOpenf.getRangos(int.Parse(resultadoAImprimir.Parametro), edadDias, float.Parse(resultadoAImprimir.Resultado));
+                                            nuevoObxCuantitativo.Obx_7_rangeReference = rangosObtenidos.RangoInferior.ToString() + " - " + rangosObtenidos.RangoSuperior.ToString();
+                                        }
+                                        else {
+                                            nuevoObxCuantitativo.Obx_7_rangeReference = "0 - 0";
+
+                                        }
                                         nuevoObxCuantitativo.Obx_11_ObservationResultStatus = "F";
                                         nuevoObxCuantitativo.Obx_14_dateofObservation = nuevaObrResult.Obr_8_ObservationEndDateTime;
                                         nuevaObrResult.ListObxCuantitativos.Add(nuevoObxCuantitativo);
