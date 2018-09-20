@@ -26,14 +26,14 @@ public class openfDBManager
         conOpenf = new conexion();
         conOpenf.conectar();
         cone = conOpenf.getConexion();
-        int afectadas = 0;
+        long afectadas = 0;
         string fechaNacimiento = datos.Pid7_datetimeBirth;
         
         DateTime nacimiento = DateTime.ParseExact(fechaNacimiento+" 00:00:00", "yyyy-MM-dd HH:mm:ss",System.Globalization.CultureInfo.InvariantCulture);
 
 
         DateTime fecha_Actual = DateTime.Now;
-        int edad = (fecha_Actual - nacimiento).Days/365;
+        long edad = (fecha_Actual - nacimiento).Days/365;
 
         foreach (Peticion_obr orb_detalle in datos.ListaORB)
         {
@@ -53,7 +53,7 @@ public class openfDBManager
                 cmd = new SqlCommand(query, cone);
                 string[] apellidos = datos.Pid5_1_familyName.Split(' ');
 
-                string ordenFinal = fechaActualCodigo.ToString("yyMMdd") + datos.Orc2_placerOrderNumer + int.Parse(datos.Msh10_messageControlID);
+                string ordenFinal = fechaActualCodigo.ToString("yyMMdd") + datos.Orc2_placerOrderNumer + long.Parse(datos.Msh10_messageControlID);
 
                 cmd.Parameters.Add(new SqlParameter("@POrdens", ordenFinal));
                 var salaryParam = new SqlParameter("PFSolicituds", SqlDbType.SmallDateTime);
@@ -208,7 +208,7 @@ public class openfDBManager
     /// <param name="EdadDias">Edad de la persona en dias</param>
     /// <param name="lectura">Cantidad leida en la vista de resultados</param>
     /// <returns>Retorna una entidad llamada Rangos con los elementos necesarios</returns>
-    public Rango getRangos(int cod,int EdadDias,float lectura) {
+    public Rango getRangos(long cod,long EdadDias,float lectura) {
         Rango rangosAdecuados=new Rango();
 
         conOpenf = new conexion();
@@ -303,7 +303,7 @@ public class openfDBManager
     /// </summary>
     /// <param name="orden"># de orden SIAP </param>
     /// <returns>Retorna una lista de entidades ResultVIew(resultados de la vista) </returns>
-    public List<resultview> getResultados(int orden) {
+    public List<resultview> getResultados(long orden) {
         resultview resultado = new resultview();
         List<resultview> resultadosLista = new List<resultview>();
         conOpenf = new conexion();
@@ -338,9 +338,9 @@ public class openfDBManager
     /// </summary>
     /// <param name="orden"># de orden SIAP</param>
     /// <returns>retorna un entero</returns>
-    public int cantidadRespuestas(int orden)
+    public long cantidadRespuestas(long orden)
     {
-        int resultado = 0;
+        long resultado = 0;
         conOpenf = new conexion();
         conOpenf.conectar();
         cone = conOpenf.getConexion();
@@ -349,7 +349,7 @@ public class openfDBManager
         SqlDataReader reader = cmd.ExecuteReader();
         if (reader.Read())
         {
-            resultado = int.Parse(reader["cantidad"].ToString());
+            resultado = long.Parse(reader["cantidad"].ToString());
         }
         
         conOpenf.desconectar();cone.Close();
@@ -361,7 +361,7 @@ public class openfDBManager
     /// <param name="orden"># de orden SIAP</param>
     /// <param name="prueba">Codigo de prueba</param>
     /// <returns>Retorna una lista de entidades de tipo ResultView</returns>
-    public List<resultview> getResultadosByEstudio(int orden,string prueba)
+    public List<resultview> getResultadosByEstudio(long orden,string prueba)
     {
       
         List<resultview> resultadosLista = new List<resultview>();
@@ -438,9 +438,9 @@ public class openfDBManager
     /// <param name="sexo">Sexo de a persona</param>
     /// <param name="edadDias">Edad en dias de la persona</param>
     /// <returns>retorna un objeto de tipo entidad de SubElemento</returns>
-    public subElemento getSubElemeto(string elementos,string tparam, string sexo, int edadDias) {
+    public subElemento getSubElemeto(string elementos,string tparam, string sexo, long edadDias) {
         subElemento resultado = new subElemento();
-        int idEdad = 1;
+        long idEdad = 1;
         if(edadDias>=0 && edadDias < 54750)
         {
             idEdad = 4;

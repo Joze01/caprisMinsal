@@ -11,7 +11,7 @@ public class Repuesta_Orb
     /// <summary>
     /// DEBE SER INCREMENTAL
     /// </summary>
-    int obr_1_IDOBR;
+    long obr_1_IDOBR;
     string obr_2_PlacerOrdeNumber;//(DetalleSoliciturd)
 
     string obr_4_1_Identifier;
@@ -39,7 +39,7 @@ public class Repuesta_Orb
         //
     }
 
-    public int Obr_1_IDOBR
+    public long Obr_1_IDOBR
     {
         get
         {

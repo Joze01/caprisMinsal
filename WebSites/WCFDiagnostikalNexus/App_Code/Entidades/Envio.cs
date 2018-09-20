@@ -9,7 +9,7 @@ using System.Web;
 public class Envio
 {
     string mensaje;
-    int indice;
+    long indice;
     public Envio()
     {
         //
@@ -30,7 +30,7 @@ public class Envio
         }
     }
 
-    public int Indice
+    public long Indice
     {
         get
         {

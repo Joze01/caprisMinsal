@@ -9,7 +9,7 @@ using System.Web;
 public class Completas_Envio
 {
 
-    private int indice;
+    private long indice;
 
     public Completas_Envio()
     {
@@ -18,7 +18,7 @@ public class Completas_Envio
         //
     }
 
-    public int Indice
+    public long Indice
     {
         get
         {

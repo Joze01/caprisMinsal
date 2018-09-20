@@ -30,9 +30,9 @@ public class hl7DBManager
     /// <param name="idSiaps">Id de siaps</param>
     /// <param name="area">Area que envia la peticion.</param>
     /// <returns>Retorna True si se completa o false si no lo hace.</returns>
-    public Boolean guardarPeticion(String mensaje, int examenes, int orden, string idSiaps, int area) {
+    public Boolean guardarPeticion(String mensaje, long examenes, long orden, string idSiaps, long area) {
         conhl7 = new Conexonhl7();
-        int afectadas = 0;
+        long afectadas = 0;
         conhl7.conectar();
         cone = conhl7.getConexion();
         DateTime fechaActualCodigo = DateTime.Now;
@@ -72,11 +72,11 @@ public class hl7DBManager
         while (reader.Read())
         {
             transacciones transaccion = new transacciones();
-            transaccion.Indice1 = int.Parse(reader["Indice"].ToString());
+            transaccion.Indice1 = long.Parse(reader["Indice"].ToString());
             transaccion.Peticion = reader["peticion"].ToString();
             transaccion.Estado = 0;
             transaccion.Fecha = reader.GetDateTime(4);
-            transaccion.Pruebas = int.Parse(reader["pruebas"].ToString());
+            transaccion.Pruebas = long.Parse(reader["pruebas"].ToString());
             transaccion.Orden = reader["orden"].ToString();
             transaccion.Siapsid = reader["siapsid"].ToString();
 
@@ -92,9 +92,9 @@ public class hl7DBManager
     /// </summary>
     /// <param name="ordern"># de orden</param>
     /// <returns>Retorna un entero con la cantidad.</returns>
-    public int cantidadResultados(int ordern)
+    public long cantidadResultados(long ordern)
     {
-        int numeroRespuestas = 0;
+        long numeroRespuestas = 0;
         
         conhl7 = new Conexonhl7();
         conhl7.conectar();
@@ -104,7 +104,7 @@ public class hl7DBManager
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
         {
-            numeroRespuestas = int.Parse(reader["pruebas"].ToString());
+            numeroRespuestas = long.Parse(reader["pruebas"].ToString());
         }
         
         conhl7.desconectar();cone.Close();;
@@ -117,9 +117,9 @@ public class hl7DBManager
     /// </summary>
     /// <param name="ordern"># de orden SIAPS</param>
     /// <returns>Retorna de respuesta que tiene cada peticion.</returns>
-    public int cantidadResultadosCompletosOld(int ordern)
+    public long cantidadResultadosCompletosOld(long ordern)
     {
-        int numeroRespuestas = 0;
+        long numeroRespuestas = 0;
 
         conhl7 = new Conexonhl7();
         conhl7.conectar();
@@ -129,7 +129,7 @@ public class hl7DBManager
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
         {
-            numeroRespuestas = int.Parse(reader["completas"].ToString());
+            numeroRespuestas = long.Parse(reader["completas"].ToString());
         }
 
         conhl7.desconectar();cone.Close();
@@ -145,13 +145,13 @@ public class hl7DBManager
     /// <param name="mensaje">Mensaje de respuesta</param>
     /// <param name="ordenn"># de orden</param>
     /// <returns>retorna false si hay algun fallo. </returns>
-    public Boolean actualizarCompletas(int id,string mensaje,int ordenn) {
+    public Boolean actualizarCompletas(long id,string mensaje,long ordenn) {
 
         openfDBManager managerOpenF = new openfDBManager();
         String query = "";
-        int cantidadPruebasReg = this.cantidadResultados(ordenn);
-        int cantidadPruebasCom = managerOpenF.cantidadRespuestas(ordenn);
-        int cantidadPruebasCompletadasOld = this.cantidadResultadosCompletosOld(ordenn);
+        long cantidadPruebasReg = this.cantidadResultados(ordenn);
+        long cantidadPruebasCom = managerOpenF.cantidadRespuestas(ordenn);
+        long cantidadPruebasCompletadasOld = this.cantidadResultadosCompletosOld(ordenn);
 
         if (cantidadPruebasCom == cantidadPruebasReg && cantidadPruebasCompletadasOld< cantidadPruebasCom) {
             query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =3 WHERE Indice=" + id ;
@@ -169,7 +169,7 @@ public class hl7DBManager
         }
         actualizarCantidadProcesadas(cantidadPruebasCom, id);
         conhl7 = new Conexonhl7();
-        int afectadas = 0;
+        long afectadas = 0;
         conhl7.conectar();
         cone = conhl7.getConexion();
         cmd = new SqlCommand(query, cone);
@@ -190,10 +190,10 @@ public class hl7DBManager
     /// </summary>
     /// <param name="id">Indice de la tabla.</param>
     /// <returns>Retorna false si falla la conexion</returns>
-    public Boolean actualizarEnviadas(int id)
+    public Boolean actualizarEnviadas(long id)
     {
         conhl7 = new Conexonhl7();
-        int afectadas = 0;
+        long afectadas = 0;
         conhl7.conectar();
         cone = conhl7.getConexion();
 
@@ -218,7 +218,7 @@ public class hl7DBManager
     /// </summary>
     /// <param name="indice"></param>
     /// <returns>Ttrue si el estado es 3</returns>
-    public Boolean isCompleta(int indice) {
+    public Boolean isCompleta(long indice) {
         List<transacciones> listaCompletas = new List<transacciones>();
         conhl7 = new Conexonhl7();
         conhl7.conectar();
@@ -250,20 +250,20 @@ public class hl7DBManager
         while (reader.Read())
         {
             transacciones transaccion = new transacciones();
-            transaccion.Indice1 = int.Parse(reader["Indice"].ToString());
+            transaccion.Indice1 = long.Parse(reader["Indice"].ToString());
             transaccion.Peticion = reader["peticion"].ToString();
             transaccion.Respuesta = reader["Respuesta"].ToString();
-            transaccion.Estado = int.Parse(reader["estado"].ToString());
+            transaccion.Estado = long.Parse(reader["estado"].ToString());
             transaccion.Fecha = reader.GetDateTime(4);
-            transaccion.Pruebas = int.Parse(reader["pruebas"].ToString());
+            transaccion.Pruebas = long.Parse(reader["pruebas"].ToString());
             transaccion.Orden = reader["orden"].ToString();
             transaccion.Siapsid = reader["siapsid"].ToString();
-            int cantidadPruebasCompletadasOld = this.cantidadResultadosCompletosOld(int.Parse(transaccion.Siapsid));
-            int cantidadPruebasCom = managerOpenF.cantidadRespuestas(int.Parse(transaccion.Siapsid));
+            long cantidadPruebasCompletadasOld = this.cantidadResultadosCompletosOld(long.Parse(transaccion.Siapsid));
+            long cantidadPruebasCom = managerOpenF.cantidadRespuestas(long.Parse(transaccion.Siapsid));
 
             if (cantidadPruebasCompletadasOld != cantidadPruebasCom || transaccion.Estado == 3) { 
                 listaCompletas.Add(transaccion);
-                actualizarCompletas(transaccion.Indice1, transaccion.Respuesta, int.Parse(transaccion.Siapsid));
+                actualizarCompletas(transaccion.Indice1, transaccion.Respuesta, long.Parse(transaccion.Siapsid));
             }
         }
 
@@ -279,9 +279,9 @@ public class hl7DBManager
     /// <param name="cantidad"></param>
     /// <param name="id"></param>
     /// <returns></returns>
-    public Boolean actualizarCantidadProcesadas(int cantidad,int id) {
+    public Boolean actualizarCantidadProcesadas(long cantidad,long id) {
         conhl7 = new Conexonhl7();
-        int afectadas = 0;
+        long afectadas = 0;
         conhl7.conectar();
         cone = conhl7.getConexion();
 

@@ -9,21 +9,21 @@ using System.Web;
 public class DatosPeticion
 {
 
-    private int indice;
-    private int orden;
+    private long indice;
+    private long orden;
     private string fsolicitud;
-    private int origin;
-    private int servicio;
+    private long origin;
+    private long servicio;
     private string doctor;
-    private int libre;
-    private int Identificacion;
+    private long libre;
+    private long Identificacion;
     private string nombre;
     private string apellido1;
     private string apellido2;
     private string FNac;
     private string codigo;
     private string sexo;
-    private int edad;
+    private long edad;
     private string hl7Peticion;
 
     public DatosPeticion()
@@ -31,7 +31,7 @@ public class DatosPeticion
 
     }
 
-    public DatosPeticion(int indice, int orden, string fsolicitud, int origin, int servicio, string doctor, int libre, int identificacion, string nombre, string apellido1, string apellido2, string fNac, string codigo, string sexo, int edad)
+    public DatosPeticion(long indice, long orden, string fsolicitud, long origin, long servicio, string doctor, long libre, long identificacion, string nombre, string apellido1, string apellido2, string fNac, string codigo, string sexo, long edad)
     {
         this.indice = indice;
         this.orden = orden;
@@ -50,7 +50,7 @@ public class DatosPeticion
         this.edad = edad;
     }
 
-    public int Indice
+    public long Indice
     {
         get
         {
@@ -63,7 +63,7 @@ public class DatosPeticion
         }
     }
 
-    public int Orden
+    public long Orden
     {
         get
         {
@@ -89,7 +89,7 @@ public class DatosPeticion
         }
     }
 
-    public int Origin
+    public long Origin
     {
         get
         {
@@ -102,7 +102,7 @@ public class DatosPeticion
         }
     }
 
-    public int Servicio
+    public long Servicio
     {
         get
         {
@@ -128,7 +128,7 @@ public class DatosPeticion
         }
     }
 
-    public int Libre
+    public long Libre
     {
         get
         {
@@ -141,7 +141,7 @@ public class DatosPeticion
         }
     }
 
-    public int Identificacion1
+    public long Identificacion1
     {
         get
         {
@@ -219,7 +219,7 @@ public class DatosPeticion
         }
     }
 
-    public int Edad
+    public long Edad
     {
         get
         {
@@ -232,7 +232,7 @@ public class DatosPeticion
         }
     }
 
-    public int Indice1
+    public long Indice1
     {
         get
         {
@@ -245,7 +245,7 @@ public class DatosPeticion
         }
     }
 
-    public int Orden1
+    public long Orden1
     {
         get
         {
@@ -271,7 +271,7 @@ public class DatosPeticion
         }
     }
 
-    public int Origin1
+    public long Origin1
     {
         get
         {
@@ -284,7 +284,7 @@ public class DatosPeticion
         }
     }
 
-    public int Servicio1
+    public long Servicio1
     {
         get
         {
@@ -310,7 +310,7 @@ public class DatosPeticion
         }
     }
 
-    public int Libre1
+    public long Libre1
     {
         get
         {
@@ -323,7 +323,7 @@ public class DatosPeticion
         }
     }
 
-    public int Identificacion2
+    public long Identificacion2
     {
         get
         {
@@ -414,7 +414,7 @@ public class DatosPeticion
         }
     }
 
-    public int Edad1
+    public long Edad1
     {
         get
         {

@@ -9,7 +9,7 @@ using System.Web;
 public class Rango
 {
     string comentario;
-    int idComentario;
+    long idComentario;
 
     float rangoInferior;
     float rangoSuperior;
@@ -35,7 +35,7 @@ public class Rango
         }
     }
 
-    public int IdComentario
+    public long IdComentario
     {
         get
         {

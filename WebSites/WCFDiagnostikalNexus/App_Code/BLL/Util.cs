@@ -16,7 +16,7 @@ public class Util
     }
 
 
-    public List<string> getRangos(int edadDias, string lectura)
+    public List<string> getRangos(long edadDias, string lectura)
     {
         List<string> comentarios = new List<string>();
         string id = "";
@@ -67,11 +67,11 @@ public class Util
 
         foreach (transacciones tranIncompleta in listaPendientes)
         {
-            int contadorObr = 1;
+            long contadorObr = 1;
             orcCargado = false;
             respuesta = "";
             resultadosObtenido = new List<resultview>();
-            resultadosObtenido = managerDBOpenf.getResultados(int.Parse(tranIncompleta.Siapsid));
+            resultadosObtenido = managerDBOpenf.getResultados(long.Parse(tranIncompleta.Siapsid));
             PeticionEntrante peticionActual = new PeticionEntrante();
             peticionActual = parseadorHl7.leerPeticion(tranIncompleta.Peticion);
 
@@ -85,12 +85,12 @@ public class Util
                 resultadoRepuesta.Orc_9_FechaDeEnvio = now.ToString("yyyyMMddHHmm");
 
 
-                //resultadosObtenido = managerDBOpenf.getResultados(int.Parse(tranIncompleta.Respuesta));
+                //resultadosObtenido = managerDBOpenf.getResultados(long.Parse(tranIncompleta.Respuesta));
 
                 foreach (Peticion_obr obrPeticion in peticionActual.ListaORB)
                 {
                     List<resultview> ResultadosObx = new List<resultview>();
-                    ResultadosObx = managerDBOpenf.getResultadosByEstudio(int.Parse(tranIncompleta.Siapsid), obrPeticion.Obr4_4_AlternateIdentifier);
+                    ResultadosObx = managerDBOpenf.getResultadosByEstudio(long.Parse(tranIncompleta.Siapsid), obrPeticion.Obr4_4_AlternateIdentifier);
                     if (ResultadosObx.Count() > 0)
                     {
                         string examenIdStudio = ResultadosObx[0].Estudio;
@@ -160,7 +160,7 @@ public class Util
                         nuevaObxCualitativo.Obx_2_TipoDato = "ST";
                         nuevaObxCualitativo.Obx_3_IdExamenSolicitado = nuevaObrResult.Obr_4_1_Identifier;
 
-                        int contadorObx = 2;
+                        long contadorObx = 2;
 
                         if (TipoExamenPlantilla == "A")
                         {
@@ -179,7 +179,7 @@ public class Util
                                     string fechaNacimiento = peticionActual.Pid7_datetimeBirth;
                                     DateTime nacimiento = DateTime.ParseExact(fechaNacimiento + " 00:00:00", "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                                     DateTime fecha_Actual = DateTime.Now;
-                                    int edadDias = (fecha_Actual - nacimiento).Days;
+                                    long edadDias = (fecha_Actual - nacimiento).Days;
                                     float resultadoValue = 0;
                                     string PrimerCaracter = resultadoAImprimir.Resultado.Substring(0, 1);
                                     if (PrimerCaracter == ".")
@@ -192,7 +192,7 @@ public class Util
                                     }
                                     nuevoObxCuantitativo.Obx_5_ObservationValue = resultadoAImprimir.Resultado;
 
-                                    Rango rangosObtenidos = managerDBOpenf.getRangos(int.Parse(resultadoAImprimir.Parametro), edadDias, resultadoValue);
+                                    Rango rangosObtenidos = managerDBOpenf.getRangos(long.Parse(resultadoAImprimir.Parametro), edadDias, resultadoValue);
                                     nuevoObxCuantitativo.Obx_7_rangeReference = rangosObtenidos.RangoInferior.ToString() + " - " + rangosObtenidos.RangoSuperior.ToString();
                                     nuevoObxCuantitativo.Obx_11_ObservationResultStatus = "F";
                                     nuevoObxCuantitativo.Obx_14_dateofObservation = nuevaObrResult.Obr_8_ObservationEndDateTime;
@@ -210,7 +210,7 @@ public class Util
                                     string fechaNacimiento = peticionActual.Pid7_datetimeBirth;
                                     DateTime nacimiento = DateTime.ParseExact(fechaNacimiento + " 00:00:00", "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                                     DateTime fecha_Actual = DateTime.Now;
-                                    int edadDias = (fecha_Actual - nacimiento).Days;
+                                    long edadDias = (fecha_Actual - nacimiento).Days;
                                     float resultadoValue = 0;
                                     string PrimerCaracter = resultadoAImprimir.Resultado.Substring(0, 1);
                                     if (PrimerCaracter == ".")
@@ -223,7 +223,7 @@ public class Util
                                     }
                                     nuevoObxCuantitativo.Obx_5_ObservationValue = resultadoAImprimir.Resultado;
 
-                                    //Rango rangosObtenidos = managerDBOpenf.getRangos(int.Parse(resultadoAImprimir.Parametro), edadDias, resultadoValue);
+                                    //Rango rangosObtenidos = managerDBOpenf.getRangos(long.Parse(resultadoAImprimir.Parametro), edadDias, resultadoValue);
                                     nuevoObxCuantitativo.Obx_7_rangeReference = "0 - 0";
                                     nuevoObxCuantitativo.Obx_11_ObservationResultStatus = "F";
                                     nuevoObxCuantitativo.Obx_14_dateofObservation = nuevaObrResult.Obr_8_ObservationEndDateTime;
@@ -247,7 +247,7 @@ public class Util
                                     string fechaNacimiento = peticionActual.Pid7_datetimeBirth;
                                     DateTime nacimiento = DateTime.ParseExact(fechaNacimiento + " 00:00:00", "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                                     DateTime fecha_Actual = DateTime.Now;
-                                    int edadDias = (fecha_Actual - nacimiento).Days;
+                                    long edadDias = (fecha_Actual - nacimiento).Days;
                                     Respuesta_obx nuevoObxCuantitativo = new Respuesta_obx();
                                     nuevoObxCuantitativo.Obx_1_ObxId = contadorObx.ToString();
                                    
@@ -278,7 +278,7 @@ public class Util
                                         nuevoObxCuantitativo.Obx_6_units = managerDBOpenf.getUnitstest(resultadoAImprimir.Parametro);
                                         if (resultadoAImprimir.Resultado != "")
                                         {
-                                            Rango rangosObtenidos = managerDBOpenf.getRangos(int.Parse(resultadoAImprimir.Parametro), edadDias, float.Parse(resultadoAImprimir.Resultado));
+                                            Rango rangosObtenidos = managerDBOpenf.getRangos(long.Parse(resultadoAImprimir.Parametro), edadDias, float.Parse(resultadoAImprimir.Resultado));
                                             nuevoObxCuantitativo.Obx_7_rangeReference = rangosObtenidos.RangoInferior.ToString() + " - " + rangosObtenidos.RangoSuperior.ToString();
                                         }
                                         else {
@@ -306,7 +306,7 @@ public class Util
                                         nuevaObrResult.ListObxCuantitativos.Add(nuevoObxCuantitativo);
                                     }
 
-                                    int idComentario = 1;
+                                    long idComentario = 1;
                                     ResultadosObx[ResultadosObx.Count - 1].Resultado = ResultadosObx[ResultadosObx.Count - 1].Resultado.Replace(" ", "");
                                     if (ResultadosObx[ResultadosObx.Count - 1].Resultado.ToUpper() == "NORMAL" || ResultadosObx[ResultadosObx.Count - 1].Resultado.ToLower() == "normal")
                                     {
@@ -347,7 +347,7 @@ public class Util
             }//end if resultado==null
 
             if (respuesta != "")
-                managerDBOhl7.actualizarCompletas(tranIncompleta.Indice1, respuesta, int.Parse(tranIncompleta.Orden));
+                managerDBOhl7.actualizarCompletas(tranIncompleta.Indice1, respuesta, long.Parse(tranIncompleta.Orden));
             respuesta = "";
             resultadoRepuesta = new Repuesta();
             orcCargado = false;

@@ -9,12 +9,12 @@ using System.Web;
 public class transacciones
 {
 
-    int Indice;
+    long Indice;
     string peticion;
     string respuesta;
-    int estado;
+    long estado;
     DateTime fecha;
-    int pruebas;
+    long pruebas;
     string orden;
     string siapsid;
 
@@ -27,7 +27,7 @@ public class transacciones
         //
     }
 
-    public int Indice1
+    public long Indice1
     {
         get
         {
@@ -66,7 +66,7 @@ public class transacciones
         }
     }
 
-    public int Estado
+    public long Estado
     {
         get
         {
@@ -92,7 +92,7 @@ public class transacciones
         }
     }
 
-    public int Pruebas
+    public long Pruebas
     {
         get
         {
