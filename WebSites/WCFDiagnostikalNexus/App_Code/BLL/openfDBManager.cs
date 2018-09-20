@@ -53,9 +53,9 @@ public class openfDBManager
                 cmd = new SqlCommand(query, cone);
                 string[] apellidos = datos.Pid5_1_familyName.Split(' ');
 
-                string ordenFinal = fechaActualCodigo.ToString("yyMMdd") + datos.Listaspm[0].Spm2_specimenId;
+                string ordenFinal = fechaActualCodigo.ToString("yyMMdd") + datos.Orc4_placerGroupNumer;
 
-                cmd.Parameters.Add(new SqlParameter("@POrdens", ordenFinal.Remove(0,1)));
+                cmd.Parameters.Add(new SqlParameter("@POrdens", ordenFinal));
                 var salaryParam = new SqlParameter("PFSolicituds", SqlDbType.SmallDateTime);
                 salaryParam.Value = dateTimeTransaction.ToShortDateString();
                 cmd.Parameters.Add(new SqlParameter("@POrigens", datos.Pv2_patientClass));

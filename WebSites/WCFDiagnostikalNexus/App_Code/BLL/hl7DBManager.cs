@@ -40,7 +40,7 @@ public class hl7DBManager
         cmd =new SqlCommand(query, cone);
         cmd.Parameters.AddWithValue("@Ppeticion", mensaje);
         cmd.Parameters.AddWithValue("@Pexamenes", examenes);
-        string ordenFinal = fechaActualCodigo.ToString("yyMMdd").Remove(0,1) + muestra;
+        string ordenFinal = fechaActualCodigo.ToString("yyMMdd") + muestra;
         cmd.Parameters.AddWithValue("@Porden", ordenFinal);
         cmd.Parameters.AddWithValue("@Psiapsid", ordenFinal);
         cmd.Parameters.AddWithValue("@Porc", idSiaps);
