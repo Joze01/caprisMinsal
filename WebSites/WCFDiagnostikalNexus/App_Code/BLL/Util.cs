@@ -50,7 +50,7 @@ public class Util
         resultadoRepuesta.Msh_2_EncodeingCaracters = @"^~\&";
         resultadoRepuesta.Msh_3_sendingApplication = "Nexus Web Service";
         resultadoRepuesta.Msh_4_1_namespaceId = "7";
-        resultadoRepuesta.Msh_4_2_UniversalID = "DIAGNOSTIKAL CAPRIS";
+        resultadoRepuesta.Msh_4_2_UniversalID = "DIAGNOSTIKA CAPRIS";
         resultadoRepuesta.Msh_5_ReceivingApplication = "SIAP";
         resultadoRepuesta.Msh_6_ReceivingFacility = "MINSAL";
         resultadoRepuesta.Msh_7_DateTimeOfMessage = now.ToString("yyyyMMddHHmm");

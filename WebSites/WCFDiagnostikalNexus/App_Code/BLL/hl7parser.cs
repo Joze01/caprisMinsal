@@ -219,7 +219,7 @@ public class hl7parser
         }
 
         //  System.Diagnostics.Debug.WriteLine("Cantidad segmegmentos SPM:" + spmSegment.Count());
-        mangerDBhl7.guardarPeticion(peticion, obrSegment.Count(),long.Parse(nuevaPeticion.Orc4_placerGroupNumer), nuevaPeticion.Orc2_placerOrderNumer,long.Parse(nuevaPeticion.Msh10_messageControlID)); //guardar peticion en la base del servicio web
+        mangerDBhl7.guardarPeticion(peticion, obrSegment.Count(),long.Parse(nuevaPeticion.Orc4_placerGroupNumer), nuevaPeticion.Orc2_placerOrderNumer,long.Parse(nuevaPeticion.Listaspm[0].Spm2_specimenId)); //guardar peticion en la base del servicio web
         //foreach (Peticion_spm)
         if (managerDBopenf.nuevaPeticion(nuevaPeticion))
         {

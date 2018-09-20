@@ -28,9 +28,9 @@ public class hl7DBManager
     /// <param name="examenes">Cantidad de examanes</param>
     /// <param name="orden"># de orden</param>
     /// <param name="idSiaps">Id de siaps</param>
-    /// <param name="area">Area que envia la peticion.</param>
+    /// <param name="muestra">SAMPLE</param>
     /// <returns>Retorna True si se completa o false si no lo hace.</returns>
-    public Boolean guardarPeticion(String mensaje, long examenes, long orden, string idSiaps, long area) {
+    public Boolean guardarPeticion(String mensaje, long examenes, long orden, string idSiaps, long muestra) {
         conhl7 = new Conexonhl7();
         long afectadas = 0;
         conhl7.conectar();
@@ -40,7 +40,7 @@ public class hl7DBManager
         cmd =new SqlCommand(query, cone);
         cmd.Parameters.AddWithValue("@Ppeticion", mensaje);
         cmd.Parameters.AddWithValue("@Pexamenes", examenes);
-        string ordenFinal = fechaActualCodigo.ToString("yyMMdd") + idSiaps + area;
+        string ordenFinal = fechaActualCodigo.ToString("yyMMdd").Remove(0,1) + muestra;
         cmd.Parameters.AddWithValue("@Porden", ordenFinal);
         cmd.Parameters.AddWithValue("@Psiapsid", ordenFinal);
         cmd.Parameters.AddWithValue("@Porc", idSiaps);
