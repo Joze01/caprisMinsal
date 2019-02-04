@@ -9,7 +9,7 @@ using System.Data;
 /// </summary>
 public class hl7DBManager
 {
-   
+
     Conexonhl7 conhl7;
     SqlConnection cone;
     SqlCommand cmd;
@@ -30,27 +30,30 @@ public class hl7DBManager
     /// <param name="idSiaps">Id de siaps</param>
     /// <param name="muestra">SAMPLE</param>
     /// <returns>Retorna True si se completa o false si no lo hace.</returns>
-    public Boolean guardarPeticion(String mensaje, long examenes, long orden, string idSiaps, long muestra) {
+    public Boolean guardarPeticion(String mensaje, long examenes, long orden, string idSiaps, long muestra, string ControlParam)
+    {
         conhl7 = new Conexonhl7();
         long afectadas = 0;
         conhl7.conectar();
         cone = conhl7.getConexion();
         DateTime fechaActualCodigo = DateTime.Now;
-        String query= "INSERT INTO transacciones(peticion,pruebas, orden, siapsid, orc) VALUES (@Ppeticion, @Pexamenes, @Porden, @Psiapsid, @Porc)";
-        cmd =new SqlCommand(query, cone);
+
+        String query = "INSERT INTO transacciones(peticion,pruebas, orden, siapsid, orc, ox) VALUES (@Ppeticion, @Pexamenes, @Porden, @Psiapsid, @Porc, @Pox)";
+        cmd = new SqlCommand(query, cone);
         cmd.Parameters.AddWithValue("@Ppeticion", mensaje);
         cmd.Parameters.AddWithValue("@Pexamenes", examenes);
         string ordenFinal = fechaActualCodigo.ToString("yyMMdd") + muestra;
         cmd.Parameters.AddWithValue("@Porden", ordenFinal);
         cmd.Parameters.AddWithValue("@Psiapsid", ordenFinal);
         cmd.Parameters.AddWithValue("@Porc", idSiaps);
+        cmd.Parameters.AddWithValue("@Pox", ControlParam);
         cmd.CommandType = CommandType.Text;
         afectadas = cmd.ExecuteNonQuery();
         if (afectadas > 0)
         {
             return true;
         }
-        conhl7.desconectar();cone.Close();
+        conhl7.desconectar(); cone.Close();
         return false;
     }
 
@@ -83,7 +86,7 @@ public class hl7DBManager
             listaPendiente.Add(transaccion);
         }
 
-        conhl7.desconectar();cone.Close();
+        conhl7.desconectar(); cone.Close();
         return listaPendiente;
     }
 
@@ -95,21 +98,21 @@ public class hl7DBManager
     public long cantidadResultados(long ordern)
     {
         long numeroRespuestas = 0;
-        
+
         conhl7 = new Conexonhl7();
         conhl7.conectar();
         cone = conhl7.getConexion();
-        string query = "select pruebas from transacciones where orden="+ ordern;
+        string query = "select pruebas from transacciones where orden=" + ordern;
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
         {
             numeroRespuestas = long.Parse(reader["pruebas"].ToString());
         }
-        
-        conhl7.desconectar();cone.Close();;
+
+        conhl7.desconectar(); cone.Close(); ;
         return numeroRespuestas;
-        
+
     }
 
     /// <summary>
@@ -132,7 +135,7 @@ public class hl7DBManager
             numeroRespuestas = long.Parse(reader["completas"].ToString());
         }
 
-        conhl7.desconectar();cone.Close();
+        conhl7.desconectar(); cone.Close();
         return numeroRespuestas;
 
     }
@@ -145,7 +148,8 @@ public class hl7DBManager
     /// <param name="mensaje">Mensaje de respuesta</param>
     /// <param name="ordenn"># de orden</param>
     /// <returns>retorna false si hay algun fallo. </returns>
-    public Boolean actualizarCompletas(long id,string mensaje,long ordenn) {
+    public Boolean actualizarCompletas(long id, string mensaje, long ordenn)
+    {
 
         openfDBManager managerOpenF = new openfDBManager();
         String query = "";
@@ -153,13 +157,15 @@ public class hl7DBManager
         long cantidadPruebasCom = managerOpenF.cantidadRespuestas(ordenn);
         long cantidadPruebasCompletadasOld = this.cantidadResultadosCompletosOld(ordenn);
 
-        if (cantidadPruebasCom == cantidadPruebasReg && cantidadPruebasCompletadasOld< cantidadPruebasCom) {
-            query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =3 WHERE Indice=" + id ;
+        if (cantidadPruebasCom == cantidadPruebasReg && cantidadPruebasCompletadasOld < cantidadPruebasCom)
+        {
+            query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =3 WHERE Indice=" + id;
         }
         else
         {
-            if(cantidadPruebasCompletadasOld != cantidadPruebasCom) { 
-            query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =1 WHERE Indice=" + id;
+            if (cantidadPruebasCompletadasOld != cantidadPruebasCom)
+            {
+                query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =1 WHERE Indice=" + id;
             }
         }
 
@@ -181,7 +187,7 @@ public class hl7DBManager
             return true;
         }
 
-        conhl7.desconectar();cone.Close();
+        conhl7.desconectar(); cone.Close();
         return false;
     }
 
@@ -199,7 +205,7 @@ public class hl7DBManager
 
         String query = "UPDATE transacciones SET estado =2 WHERE Indice=" + id;
         cmd = new SqlCommand(query, cone);
-        System.Diagnostics.Debug.WriteLine("checked: "+id);
+        System.Diagnostics.Debug.WriteLine("checked: " + id);
 
 
         cmd.CommandType = CommandType.Text;
@@ -218,19 +224,20 @@ public class hl7DBManager
     /// </summary>
     /// <param name="indice"></param>
     /// <returns>Ttrue si el estado es 3</returns>
-    public Boolean isCompleta(long indice) {
+    public Boolean isCompleta(long indice)
+    {
         List<transacciones> listaCompletas = new List<transacciones>();
         conhl7 = new Conexonhl7();
         conhl7.conectar();
         cone = conhl7.getConexion();
-        string query = "select * from transacciones where estado=3 and indice="+indice;
+        string query = "select * from transacciones where estado=3 and indice=" + indice;
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         if (reader.Read())
         {
             return true;
         }
-        conhl7.desconectar();cone.Close();
+        conhl7.desconectar(); cone.Close();
         return false;
     }
 
@@ -238,7 +245,8 @@ public class hl7DBManager
     /// Funcion para extraer el listado de peticiones que ya se completaron
     /// </summary>
     /// <returns>Lista de Entidades Transaccion.</returns>
-    public List<transacciones> ObtenerCompletos() {
+    public List<transacciones> ObtenerCompletos()
+    {
         List<transacciones> listaCompletas = new List<transacciones>();
         openfDBManager managerOpenF = new openfDBManager();
         conhl7 = new Conexonhl7();
@@ -261,14 +269,15 @@ public class hl7DBManager
             long cantidadPruebasCompletadasOld = this.cantidadResultadosCompletosOld(long.Parse(transaccion.Siapsid));
             long cantidadPruebasCom = managerOpenF.cantidadRespuestas(long.Parse(transaccion.Siapsid));
 
-            if (cantidadPruebasCompletadasOld != cantidadPruebasCom || transaccion.Estado == 3) { 
+            if (cantidadPruebasCompletadasOld != cantidadPruebasCom || transaccion.Estado == 3)
+            {
                 listaCompletas.Add(transaccion);
                 actualizarCompletas(transaccion.Indice1, transaccion.Respuesta, long.Parse(transaccion.Siapsid));
             }
         }
 
 
-        conhl7.desconectar();cone.Close();
+        conhl7.desconectar(); cone.Close();
         return listaCompletas;
     }
 
@@ -279,13 +288,14 @@ public class hl7DBManager
     /// <param name="cantidad"></param>
     /// <param name="id"></param>
     /// <returns></returns>
-    public Boolean actualizarCantidadProcesadas(long cantidad,long id) {
+    public Boolean actualizarCantidadProcesadas(long cantidad, long id)
+    {
         conhl7 = new Conexonhl7();
         long afectadas = 0;
         conhl7.conectar();
         cone = conhl7.getConexion();
 
-        String query = "UPDATE transacciones SET completas ="+cantidad+" WHERE Indice=" + id;
+        String query = "UPDATE transacciones SET completas =" + cantidad + " WHERE Indice=" + id;
         cmd = new SqlCommand(query, cone);
 
 
@@ -296,9 +306,38 @@ public class hl7DBManager
             return true;
         }
 
-        conhl7.desconectar();cone.Close();
+        conhl7.desconectar(); cone.Close();
         return false;
 
 
     }
+
+    /// <summary>
+    /// Funcioon para actualizar el estado de una peticion OX
+    /// </summary>
+    /// <param name="newPeticion"></param>
+    /// <returns></returns>
+    public Boolean updateOXpetition(PeticionEntrante newPeticion) { 
+        conhl7 = new  Conexonhl7();
+        conhl7.conectar();
+        cone = conhl7.getConexion();
+        String query = "UPDATE transacciones SET ox= @Pox, estado= 8 WHERE orc= @Porden";
+        cmd = new SqlCommand(query, cone);
+        cmd.Parameters.AddWithValue("@Pox", newPeticion.Orc1_orderControl);
+        cmd.Parameters.AddWithValue("@Porden", newPeticion.Orc2_placerOrderNumer);
+        cmd.CommandType = CommandType.Text;
+        int afectadas = cmd.ExecuteNonQuery();
+        if (afectadas > 0)
+        {
+            conhl7.desconectar(); cone.Close();
+            return true;
+        }
+        conhl7.desconectar(); cone.Close();
+        return false;
+    }
+
+
+
+
+
 }
