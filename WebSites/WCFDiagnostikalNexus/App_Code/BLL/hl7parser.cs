@@ -10,6 +10,9 @@ using NextLevelSeven.Core;
 /// </summary>
 public class hl7parser
 {
+    private const string UPDATE_PETICION_VALUE = "OX";
+    private const string NEW_PETICION_VALUE = "NW";
+
     hl7DBManager mangerDBhl7 = new hl7DBManager();
     openfDBManager managerDBopenf = new openfDBManager();
     public hl7parser()
@@ -219,13 +222,24 @@ public class hl7parser
         }
 
         //  System.Diagnostics.Debug.WriteLine("Cantidad segmegmentos SPM:" + spmSegment.Count());
-        mangerDBhl7.guardarPeticion(peticion, obrSegment.Count(),long.Parse(nuevaPeticion.Orc4_placerGroupNumer), nuevaPeticion.Orc2_placerOrderNumer,long.Parse(nuevaPeticion.Orc4_placerGroupNumer)); //guardar peticion en la base del servicio web
+
+        if (nuevaPeticion.Orc1_orderControl == UPDATE_PETICION_VALUE)
+        {
+            mangerDBhl7.updateOXpetition(nuevaPeticion);
+            //DELETE ON NEXUS
+            managerDBopenf.hardDeleteOnUpdate(nuevaPeticion.Orc4_placerGroupNumer);
+
+        }
+        else {
+            mangerDBhl7.guardarPeticion(peticion, obrSegment.Count(),long.Parse(nuevaPeticion.Orc4_placerGroupNumer), nuevaPeticion.Orc2_placerOrderNumer,long.Parse(nuevaPeticion.Orc4_placerGroupNumer), nuevaPeticion.Orc1_orderControl); //guardar peticion en la base del servicio web
         //foreach (Peticion_spm)
         if (managerDBopenf.nuevaPeticion(nuevaPeticion))
         {
             return true;
         }
 
+        }
+        
         return false;
     }
 
