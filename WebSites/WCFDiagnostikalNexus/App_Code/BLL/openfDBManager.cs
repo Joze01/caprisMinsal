@@ -522,4 +522,23 @@ public class openfDBManager
 
     }
 
+    public Boolean hardDeleteOnUpdate(String orden) {
+        conOpenf = new conexion();
+        conOpenf.conectar();
+        cone = conOpenf.getConexion();
+        //TABLE HISTOLIS
+        String query = "delete from HIS2LIS where orden = '"+orden+"'";
+        cmd = new SqlCommand(query, cone);
+        cmd.CommandType = CommandType.Text;
+        //TABLE ORDEN
+
+
+
+
+        conOpenf.desconectar();
+        cone.Close();
+
+
+        return true;
+    }
 }
