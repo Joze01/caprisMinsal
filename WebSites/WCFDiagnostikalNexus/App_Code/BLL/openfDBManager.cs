@@ -530,15 +530,24 @@ public class openfDBManager
         String query = "delete from HIS2LIS where orden = '"+orden+"'";
         cmd = new SqlCommand(query, cone);
         cmd.CommandType = CommandType.Text;
+        cmd.ExecuteNonQuery();
+        //TABLE OT
+        query = "delete from ot where t_custom = '" + orden + "'";
+        cmd = new SqlCommand(query, cone);
+        cmd.CommandType = CommandType.Text;
+        cmd.ExecuteNonQuery();
         //TABLE ORDEN
-
-
-
-
+        query = "delete from oficha where ficha_orden = '" + orden + "'";
+        cmd = new SqlCommand(query, cone);
+        cmd.CommandType = CommandType.Text;
+        cmd.ExecuteNonQuery();
+        //TABLE OT_PERFIL
+        query = "delete from ot_perfil where ot_perfil_order = '" + orden + "'";
+        cmd = new SqlCommand(query, cone);
+        cmd.CommandType = CommandType.Text;
+        cmd.ExecuteNonQuery();
         conOpenf.desconectar();
         cone.Close();
-
-
         return true;
     }
 }
