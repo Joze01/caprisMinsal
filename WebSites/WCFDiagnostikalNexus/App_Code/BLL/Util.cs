@@ -170,7 +170,7 @@ public class Util
                                 Boolean isNumeric = resultadoAImprimir.Resultado.All(char.IsNumber);
                                 if (isNumeric)
                                 {
-                                    nuevoObxCuantitativo.Obx_2_ValueType = "NM";
+                                    nuevoObxCuantitativo.Obx_2_ValueType = peticionActual.Orc1_orderControl;
                                     nuevoObxCuantitativo.Obx_3_1_Identifier = nuevaObrResult.Obr_4_1_Identifier;
                                     nuevoObxCuantitativo.Obx_3_2_text = nuevaObrResult.Obr_4_2_Text;
                                     nuevoObxCuantitativo.Obx_4_observationSubid = "Instrumento";
@@ -201,7 +201,7 @@ public class Util
                                     nuevaObxCualitativo.Obx_5_ResultadoCualitativo = rangosObtenidos.Comentario;//revisar
                                 }
                                 else { //NO NUMERICOS
-                                    nuevoObxCuantitativo.Obx_2_ValueType = "NM";
+                                    nuevoObxCuantitativo.Obx_2_ValueType = peticionActual.Orc1_orderControl;
                                     nuevoObxCuantitativo.Obx_3_1_Identifier = nuevaObrResult.Obr_4_1_Identifier;
                                     nuevoObxCuantitativo.Obx_3_2_text = nuevaObrResult.Obr_4_2_Text;
                                     nuevoObxCuantitativo.Obx_4_observationSubid = "Instrumento";
@@ -253,7 +253,7 @@ public class Util
                                     Boolean isNumeric = resultadoAImprimir.Resultado.All(char.IsDigit);
                                     if (isNumeric)
                                     {
-                                        nuevoObxCuantitativo.Obx_2_ValueType = "NM";
+                                        nuevoObxCuantitativo.Obx_2_ValueType = peticionActual.Orc1_orderControl;
                                         subElemento SubElementoRespuesta = managerDBOpenf.getSubElemeto(resultadoAImprimir.Estudio, resultadoAImprimir.Parametro, peticionActual.Pid8_AdministrativeSex, edadDias);
                                         //COdigo de examen
                                         nuevoObxCuantitativo.Obx_3_1_Identifier = SubElementoRespuesta.Codigo;
@@ -290,7 +290,7 @@ public class Util
                                     }
                                     else//NO ES NUMERICO
                                     {
-                                        nuevoObxCuantitativo.Obx_2_ValueType = "NM";
+                                        nuevoObxCuantitativo.Obx_2_ValueType = peticionActual.Orc1_orderControl;
                                         subElemento SubElementoRespuesta = managerDBOpenf.getSubElemeto(resultadoAImprimir.Estudio, resultadoAImprimir.Parametro, peticionActual.Pid8_AdministrativeSex, edadDias);
                                         //COdigo de examen
                                         nuevoObxCuantitativo.Obx_3_1_Identifier = SubElementoRespuesta.Codigo;
