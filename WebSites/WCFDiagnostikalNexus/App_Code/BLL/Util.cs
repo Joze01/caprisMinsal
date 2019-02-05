@@ -31,7 +31,6 @@ public class Util
         comentarios.Add(rangoUtilMax.ToString());
         return comentarios;
     }
-
     public void generarRespuestas()
     {
 
@@ -79,7 +78,7 @@ public class Util
 
             if (resultadosObtenido.Count() > 0)
             {
-                resultadoRepuesta.Orc_1_codigoDeControl = "NW";
+                resultadoRepuesta.Orc_1_codigoDeControl = peticionActual.Orc1_orderControl;
                 resultadoRepuesta.Orc_2_IdSolicitudSiaps = tranIncompleta.Siapsid;
                 resultadoRepuesta.Orc_5_EstatusOrden = "CM";
                 resultadoRepuesta.Orc_9_FechaDeEnvio = now.ToString("yyyyMMddHHmm");
