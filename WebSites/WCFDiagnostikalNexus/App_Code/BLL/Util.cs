@@ -72,6 +72,9 @@ public class Util
             resultadosObtenido = new List<resultview>();
             resultadosObtenido = managerDBOpenf.getResultados(long.Parse(tranIncompleta.Siapsid));
             PeticionEntrante peticionActual = new PeticionEntrante();
+         //   if (tranIncompleta.Orden == "190218420") {
+           //     respuesta = "";
+            //}
             peticionActual = parseadorHl7.leerPeticion(tranIncompleta.Peticion);
 
 
