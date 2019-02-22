@@ -69,7 +69,7 @@ public class hl7DBManager
         conhl7 = new Conexonhl7();
         conhl7.conectar();
         cone = conhl7.getConexion();
-        string query = "select * from transacciones where estado=0 or estado=1";
+        string query = "select * from transacciones where estado=0 or estado=1 or estado=3";
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
@@ -272,7 +272,7 @@ public class hl7DBManager
             if (cantidadPruebasCompletadasOld != cantidadPruebasCom || transaccion.Estado == 3)
             {
                 listaCompletas.Add(transaccion);
-                actualizarCompletas(transaccion.Indice1, transaccion.Respuesta, long.Parse(transaccion.Siapsid));
+                //actualizarCompletas(transaccion.Indice1, transaccion.Respuesta, long.Parse(transaccion.Siapsid));
             }
         }
 

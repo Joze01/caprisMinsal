@@ -187,7 +187,7 @@ namespace NextLevelSeven.Building.Elements
             }
             value = NormalizeLineEndings(value);
 
-            var length = value.Length;
+           var length = value.Length;
             if (length < 8)
             {
                 throw new ElementException(ErrorCode.MessageDataIsTooShort);
