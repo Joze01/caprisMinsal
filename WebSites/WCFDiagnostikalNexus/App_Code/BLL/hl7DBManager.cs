@@ -69,7 +69,7 @@ public class hl7DBManager
         conhl7 = new Conexonhl7();
         conhl7.conectar();
         cone = conhl7.getConexion();
-        string query = "select * from transacciones where estado=0 or estado=1 or estado=3";
+        string query = "select * from transacciones where estado=0 or estado=1 or (estado = 2 and completas<>pruebas)";
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
@@ -159,13 +159,13 @@ public class hl7DBManager
 
         if (cantidadPruebasCom == cantidadPruebasReg && cantidadPruebasCompletadasOld < cantidadPruebasCom)
         {
-            query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =3 WHERE Indice=" + id;
+            query = "UPDATE transacciones SET respuesta = @PRespuesta ,estado =3, enviar=1 WHERE Indice=" + id;
         }
         else
         {
             if (cantidadPruebasCompletadasOld != cantidadPruebasCom)
             {
-                query = "UPDATE transacciones SET respuesta = @PRespuesta  ,estado =1 WHERE Indice=" + id;
+                query = "UPDATE transacciones SET respuesta = @PRespuesta, enviar=1, estado =1 WHERE Indice=" + id;
             }
         }
 
@@ -198,20 +198,28 @@ public class hl7DBManager
     /// <returns>Retorna false si falla la conexion</returns>
     public Boolean actualizarEnviadas(long id)
     {
+        
+        String query = "";
+        if (isCompleta(id))
+        {
+             query = "UPDATE transacciones SET estado =2, enviar=0 WHERE Indice=" + id;
+        }
+        else {
+            query = "UPDATE transacciones SET estado =1, enviar=0 WHERE Indice=" + id;
+        }
+       
+        System.Diagnostics.Debug.WriteLine("checked: " + id);
+
         conhl7 = new Conexonhl7();
         long afectadas = 0;
         conhl7.conectar();
         cone = conhl7.getConexion();
-
-        String query = "UPDATE transacciones SET estado =2 WHERE Indice=" + id;
         cmd = new SqlCommand(query, cone);
-        System.Diagnostics.Debug.WriteLine("checked: " + id);
-
-
-        cmd.CommandType = CommandType.Text;
+        
         afectadas = cmd.ExecuteNonQuery();
         if (afectadas > 0)
         {
+            System.Diagnostics.Debug.WriteLine("checked: " + id);
             return true;
         }
         conhl7.desconectar();
@@ -230,11 +238,12 @@ public class hl7DBManager
         conhl7 = new Conexonhl7();
         conhl7.conectar();
         cone = conhl7.getConexion();
-        string query = "select * from transacciones where estado=3 and indice=" + indice;
+        string query = "select * from transacciones where completas=pruebas and indice=" + indice; 
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         if (reader.Read())
         {
+            conhl7.desconectar(); cone.Close();
             return true;
         }
         conhl7.desconectar(); cone.Close();
@@ -252,7 +261,7 @@ public class hl7DBManager
         conhl7 = new Conexonhl7();
         conhl7.conectar();
         cone = conhl7.getConexion();
-        string query = "select * from transacciones where estado=3 or estado=1 or estado=2";
+        string query = "select * from transacciones where (estado = 0 and completas = pruebas) or estado = 1 or estado = 3 or (estado=2 and pruebas <> completas)";
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
@@ -260,16 +269,19 @@ public class hl7DBManager
             transacciones transaccion = new transacciones();
             transaccion.Indice1 = long.Parse(reader["Indice"].ToString());
             transaccion.Peticion = reader["peticion"].ToString();
-            transaccion.Respuesta = reader["Respuesta"].ToString();
+            transaccion.Respuesta = reader["respuesta"].ToString();
             transaccion.Estado = long.Parse(reader["estado"].ToString());
             transaccion.Fecha = reader.GetDateTime(4);
             transaccion.Pruebas = long.Parse(reader["pruebas"].ToString());
+            int completas = int.Parse(reader["completas"].ToString());
+            int enviar = 0;
             transaccion.Orden = reader["orden"].ToString();
             transaccion.Siapsid = reader["siapsid"].ToString();
-            long cantidadPruebasCompletadasOld = this.cantidadResultadosCompletosOld(long.Parse(transaccion.Siapsid));
+            long cantidadPruebasCompletadasOld = completas;
             long cantidadPruebasCom = managerOpenF.cantidadRespuestas(long.Parse(transaccion.Siapsid));
+            enviar = int.Parse(reader["enviar"].ToString());
 
-            if (cantidadPruebasCompletadasOld != cantidadPruebasCom || transaccion.Estado == 3)
+            if (cantidadPruebasCompletadasOld != cantidadPruebasCom || transaccion.Estado == 3 || (transaccion.Estado==1 && enviar==1) )
             {
                 listaCompletas.Add(transaccion);
                 //actualizarCompletas(transaccion.Indice1, transaccion.Respuesta, long.Parse(transaccion.Siapsid));

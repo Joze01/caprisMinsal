@@ -23,9 +23,7 @@ public class openfDBManager
     /// <returns>Retorna True or False</returns>
     public Boolean nuevaPeticion(PeticionEntrante datos)
     {
-        conOpenf = new conexion();
-        conOpenf.conectar();
-        cone = conOpenf.getConexion();
+        
         long afectadas = 0;
         string fechaNacimiento = datos.Pid7_datetimeBirth;
         
@@ -50,6 +48,9 @@ public class openfDBManager
 
             try
             {
+                conOpenf = new conexion();
+                conOpenf.conectar();
+                cone = conOpenf.getConexion();
                 cmd = new SqlCommand(query, cone);
                 string[] apellidos = datos.Pid5_1_familyName.Split(' ');
 

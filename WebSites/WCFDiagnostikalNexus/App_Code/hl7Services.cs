@@ -166,10 +166,17 @@ public class hl7Services : System.Web.Services.WebService
     {
         hl7DBManager manager = new hl7DBManager();
         Completas_Envio envioCompletado;
-        envioCompletado= JsonConvert.DeserializeObject<Completas_Envio>(json_array);
-        //if (manager.isCompleta(envioCompletado.Indice)) { 
-        manager.actualizarEnviadas(envioCompletado.Indice);
-        //}
+        try
+        {
+            envioCompletado = JsonConvert.DeserializeObject<Completas_Envio>(json_array);
+
+            //if (manager.isCompleta(envioCompletado.Indice)) { 
+            manager.actualizarEnviadas(envioCompletado.Indice);
+            //}
+        }
+        catch (Exception ex) {
+            return "Error";
+        }
         return "OK";
     }
 

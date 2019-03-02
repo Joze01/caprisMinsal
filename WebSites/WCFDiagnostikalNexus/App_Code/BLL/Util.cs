@@ -72,9 +72,6 @@ public class Util
             resultadosObtenido = new List<resultview>();
             resultadosObtenido = managerDBOpenf.getResultados(long.Parse(tranIncompleta.Siapsid));
             PeticionEntrante peticionActual = new PeticionEntrante();
-         //   if (tranIncompleta.Orden == "190218420") {
-           //     respuesta = "";
-            //}
             peticionActual = parseadorHl7.leerPeticion(tranIncompleta.Peticion);
 
 
@@ -193,15 +190,24 @@ public class Util
                                         resultadoValue = float.Parse(resultadoAImprimir.Resultado);
                                     }
                                     nuevoObxCuantitativo.Obx_5_ObservationValue = resultadoAImprimir.Resultado;
+                                    Rango rangosObtenidos = new Rango();
+                                    try
+                                    {
+                                         rangosObtenidos = managerDBOpenf.getRangos(long.Parse(resultadoAImprimir.Parametro), edadDias, resultadoValue);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        rangosObtenidos = managerDBOpenf.getRangos(long.Parse(resultadoAImprimir.Parametro), edadDias, 0);
 
-                                    Rango rangosObtenidos = managerDBOpenf.getRangos(long.Parse(resultadoAImprimir.Parametro), edadDias, resultadoValue);
+                                    }
                                     nuevoObxCuantitativo.Obx_7_rangeReference = rangosObtenidos.RangoInferior.ToString() + " - " + rangosObtenidos.RangoSuperior.ToString();
-                                    nuevoObxCuantitativo.Obx_11_ObservationResultStatus = "F";
-                                    nuevoObxCuantitativo.Obx_14_dateofObservation = nuevaObrResult.Obr_8_ObservationEndDateTime;
-                                    nuevaObrResult.ListObxCuantitativos.Add(nuevoObxCuantitativo);
+                                        nuevoObxCuantitativo.Obx_11_ObservationResultStatus = "F";
+                                        nuevoObxCuantitativo.Obx_14_dateofObservation = nuevaObrResult.Obr_8_ObservationEndDateTime;
+                                        nuevaObrResult.ListObxCuantitativos.Add(nuevoObxCuantitativo);
 
-                                    nuevaObxCualitativo.Obx_4_IdDelResultado = rangosObtenidos.IdComentario.ToString();//revisar
-                                    nuevaObxCualitativo.Obx_5_ResultadoCualitativo = rangosObtenidos.Comentario;//revisar
+                                        nuevaObxCualitativo.Obx_4_IdDelResultado = rangosObtenidos.IdComentario.ToString();//revisar
+                                        nuevaObxCualitativo.Obx_5_ResultadoCualitativo = rangosObtenidos.Comentario;//revisar
+                                    
                                 }
                                 else { //NO NUMERICOS
                                     nuevoObxCuantitativo.Obx_2_ValueType = peticionActual.Orc1_orderControl;
@@ -221,7 +227,12 @@ public class Util
                                     }
                                     else
                                     {
+                                        try {
                                         resultadoValue = float.Parse(resultadoAImprimir.Resultado);
+                                        }
+                                        catch (Exception ex) {
+                                            resultadoValue = 0;
+                                        }
                                     }
                                     nuevoObxCuantitativo.Obx_5_ObservationValue = resultadoAImprimir.Resultado;
 
@@ -244,7 +255,7 @@ public class Util
                         {
                             foreach (resultview resultadoAImprimir in ResultadosObx)
                             {
-                                if (resultadoAImprimir.Parametro != "25070" && resultadoAImprimir.Parametro != "85115" && resultadoAImprimir.Parametro != "40006")
+                                if (resultadoAImprimir.Parametro != "25070" && resultadoAImprimir.Parametro != "85115" && resultadoAImprimir.Parametro != "40006" && resultadoAImprimir.Parametro != "28007")
                                 {
                                     string fechaNacimiento = peticionActual.Pid7_datetimeBirth;
                                     DateTime nacimiento = DateTime.ParseExact(fechaNacimiento + " 00:00:00", "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
