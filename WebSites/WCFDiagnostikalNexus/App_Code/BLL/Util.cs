@@ -183,7 +183,9 @@ public class Util
                                     string PrimerCaracter = resultadoAImprimir.Resultado.Substring(0, 1);
                                     if (PrimerCaracter == ".")
                                     {
-                                        resultadoValue = float.Parse("0" + resultadoAImprimir.Resultado);
+                                        String realValue = "0" + resultadoAImprimir.Resultado;
+                                        resultadoValue = float.Parse(realValue);
+                                        resultadoAImprimir.Resultado = realValue;
                                     }
                                     else
                                     {
@@ -223,7 +225,9 @@ public class Util
                                     string PrimerCaracter = resultadoAImprimir.Resultado.Substring(0, 1);
                                     if (PrimerCaracter == ".")
                                     {
-                                        resultadoValue = float.Parse("0" + resultadoAImprimir.Resultado);
+                                        String realValue = "0" + resultadoAImprimir.Resultado;
+                                        resultadoValue = float.Parse(realValue);
+                                        resultadoAImprimir.Resultado = realValue;
                                     }
                                     else
                                     {
@@ -265,6 +269,10 @@ public class Util
                                     nuevoObxCuantitativo.Obx_1_ObxId = contadorObx.ToString();
                                    
                                     Boolean isNumeric = resultadoAImprimir.Resultado.All(char.IsDigit);
+                                    if (resultadoAImprimir.Resultado.Substring(0, 1) == ".") {
+                                        isNumeric = true;
+                                    }
+
                                     if (isNumeric)
                                     {
                                         nuevoObxCuantitativo.Obx_2_ValueType = peticionActual.Orc1_orderControl;
@@ -275,18 +283,21 @@ public class Util
                                         nuevoObxCuantitativo.Obx_3_2_text = SubElementoRespuesta.Nombre;
                                         nuevoObxCuantitativo.Obx_4_observationSubid = "Instrumento";
                                         float resultadoValue = 0;
-                                        string PrimerCaracter = resultadoAImprimir.B_Elemento.Substring(0, 1);
+                                        string PrimerCaracter = resultadoAImprimir.Resultado.Substring(0, 1);
                                         if (PrimerCaracter == ".")
                                         {
-                                            resultadoValue = float.Parse("0" + resultadoAImprimir.Resultado);
+                                            String realValue = "0" + resultadoAImprimir.Resultado;
+                                            resultadoValue = float.Parse(realValue);
+                                            resultadoAImprimir.Resultado = realValue;
                                         }
                                         else
                                         {
                                             if(resultadoAImprimir.Resultado!="")
                                             resultadoValue = float.Parse(resultadoAImprimir.Resultado);
+                                          
                                         }
                                         //Resultado
-                                        nuevoObxCuantitativo.Obx_5_ObservationValue = resultadoValue.ToString();
+                                        nuevoObxCuantitativo.Obx_5_ObservationValue = resultadoAImprimir.Resultado;
 
                                         nuevoObxCuantitativo.Obx_6_units = managerDBOpenf.getUnitstest(resultadoAImprimir.Parametro);
                                         if (resultadoAImprimir.Resultado != "")
@@ -317,6 +328,8 @@ public class Util
                                         nuevoObxCuantitativo.Obx_11_ObservationResultStatus = "F";
                                         nuevoObxCuantitativo.Obx_14_dateofObservation = nuevaObrResult.Obr_8_ObservationEndDateTime;
                                         nuevaObrResult.ListObxCuantitativos.Add(nuevoObxCuantitativo);
+
+
                                     }
 
                                     long idComentario = 1;

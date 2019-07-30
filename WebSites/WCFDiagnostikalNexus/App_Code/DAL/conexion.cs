@@ -20,7 +20,7 @@ public class conexion
         try
         {
             desconectar();
-            con = new SqlConnection("Data Source=localhost;Initial Catalog=openf;User id=admin; Password=123");
+            con = new SqlConnection("Data Source=localhost;Initial Catalog=openf;User id=admin; Password=123; Connect Timeout=600;");
             con.Open();
         }
         catch (Exception ex)

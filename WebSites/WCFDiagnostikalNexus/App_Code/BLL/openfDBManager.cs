@@ -310,7 +310,7 @@ public class openfDBManager
         conOpenf = new conexion();
         conOpenf.conectar();
         cone = conOpenf.getConexion();
-        string query = "select * from ResultHIS_view where Orden="+orden;
+        string query = "select * from ResultHIS_view where Orden="+orden+ " and (DATEDIFF(DAY,fecha, DATEADD(DAY,-2,GETDATE())))<2";
         cmd = new SqlCommand(query, cone);
         SqlDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
